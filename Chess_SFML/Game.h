@@ -21,6 +21,7 @@ public:
 	//Methods
 	void initWindow();
 	void update();
+	void xd();
 	void render(); 
 	//void initBoard();
 	//void initInterface();
