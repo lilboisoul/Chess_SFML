@@ -12,6 +12,7 @@ class Game
 {
 private:
 	//Private
+	sf::RectangleShape fsodakg;
 	sf::VideoMode videomode;
 	sf::RenderWindow* window;
 public:
