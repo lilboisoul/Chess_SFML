@@ -14,6 +14,7 @@ private:
 	//Private
 	sf::VideoMode videomode;
 	sf::RenderWindow* window;
+	sf::Event e;
 	//Private methods
 	void initVariables();
 	void initWindow();
@@ -21,7 +22,10 @@ public:
 	//Constructors / Destructors
 	Game();
 	~Game();
+	//Getters / Setters
+	const bool running() const;
 	//Methods
+	void pollEvents();
 	void update();
 	void render(); 
 	//void initBoard();
