@@ -26,6 +26,14 @@ void Game::initWindow()
 	}
 }
 
+void Game::update()
+{
+}
+
+void Game::render()
+{
+}
+
 Game::~Game()
 {
 	delete window;

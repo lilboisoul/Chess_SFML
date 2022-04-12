@@ -12,17 +12,17 @@ class Game
 {
 private:
 	//Private
-	sf::RectangleShape fsodakg;
 	sf::VideoMode videomode;
 	sf::RenderWindow* window;
+	//Private methods
+	void initVariables();
+	void initWindow();
 public:
 	//Constructors / Destructors
 	Game();
 	~Game();
 	//Methods
-	void initWindow();
 	void update();
-	void xd();
 	void render(); 
 	//void initBoard();
 	//void initInterface();
