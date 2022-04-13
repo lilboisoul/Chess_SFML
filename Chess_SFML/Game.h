@@ -4,8 +4,10 @@
 #include "SFML\System.hpp"
 #include "SFML\Audio.hpp"
 
+#include "Board.h"
+#include "Square.h"
 /*
-	<co robi klasa>
+	A class acting as a game manager/game engine.
 
 */
 class Game
@@ -15,6 +17,9 @@ private:
 	sf::VideoMode videomode;
 	sf::RenderWindow* window;
 	sf::Event e;
+	
+	Board board;
+	
 	//Private methods
 	void initVariables();
 	void initWindow();
