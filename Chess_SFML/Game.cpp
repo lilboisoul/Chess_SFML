@@ -5,10 +5,7 @@ Game::Game()
 {
 	this->initVariables();
 	this->initWindow();
-	while (this->running()) {
-		this->update();
-		this->render();
-	}
+	this->gameLoop();
 }
 
 void Game::initVariables()
@@ -18,9 +15,19 @@ void Game::initVariables()
 
 void Game::initWindow()
 {
-	this->videomode.height = 600;
-	this->videomode.width = 800;
+	this->videomode.height = 768; //height of the game window
+	this->videomode.width = 1024; //width of the game window
 	this->window = new sf::RenderWindow (this->videomode, "Chess", sf::Style::Titlebar | sf::Style::Close);
+}
+
+void Game::gameLoop()
+{
+	while (this->running())
+	{
+		this->render();
+		
+		this->update();
+	}
 }
 
 void Game::pollEvents()
@@ -29,9 +36,11 @@ void Game::pollEvents()
 	{
 		switch (this->e.type)
 		{
+		//closes the app when the user clicks the "X" button in the upper right corner
 		case sf::Event::Closed:
 			this->window->close();
 			break;
+		//closes the app when 'Escape' is pressed
 		case sf::Event::KeyPressed:
 			if (this->e.key.code == sf::Keyboard::Escape) this->window->close();
 			break;

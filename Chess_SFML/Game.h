@@ -6,6 +6,8 @@
 
 #include "Board.h"
 #include "Square.h"
+#include "Piece.h"
+
 /*
 	A class acting as a game manager/game engine.
 
@@ -23,6 +25,7 @@ private:
 	//Private methods
 	void initVariables();
 	void initWindow();
+	void gameLoop();
 public:
 	//Constructors / Destructors
 	Game();
