@@ -6,8 +6,8 @@ void Square::initVariables()
 	this->posY = 0;
 	this->coordinateX = 0;
 	this->coordinateY = 0;
+	this->isWhite = false;
 	this->isOccupied = false;
-	
 }
 
 Square::Square()
@@ -40,3 +40,15 @@ void Square::setPosition(int new_posX, int new_posY)
 	this->posX = new_posX;
 	this->posY = new_posY;
 }
+
+void Square::setSquareColorToWhite()
+{
+	this->isWhite = true;
+}
+
+void Square::setSquareColorToBlack()
+{
+	this->isWhite = false;
+}
+
+

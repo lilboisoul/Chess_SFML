@@ -20,6 +20,7 @@ private:
 	sf::RenderWindow* window;
 	sf::Event e;
 	
+	//Game objects
 	Board board;
 	
 	//Private methods

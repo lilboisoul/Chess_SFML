@@ -11,6 +11,7 @@ Game::Game()
 void Game::initVariables()
 {
 	this->window = nullptr;
+	this->board.initBoard();
 }
 
 void Game::initWindow()

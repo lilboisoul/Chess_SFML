@@ -8,16 +8,22 @@
 */ 
 class Piece
 {
-private:
+	private:
 	//Private variables
 	
 	//Private methods
-	void initVariables();
-public:
+
+		void initVariables();
+
+	public:
+
 	sf::RectangleShape piece;
+
 	//Constructors / Destructors
+
 	Piece();
 	~Piece();
+
 	//Methods
 };
 

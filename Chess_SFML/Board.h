@@ -10,20 +10,26 @@
 class Board
 {
 private:
+
 	//Private variables
 
-	Square board[8][8];
-
-	//Private methods
-
-	void initBoard(); //initializes the squares in the array
+		Square board[8][8];
 
 public:
 
 	//Constructors / Destructors
 
-	Board();
-	~Board();
+		Board();
+		~Board();
+
+	//Public methods
+
+	//initializes the squares in the array
+		void initBoard();
+
+	//draws the board on the screen
+		void draw();
+	
 
 
 };
