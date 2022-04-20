@@ -2,6 +2,13 @@
 
 void Square::initVariables()
 {
+	//initializes render values
+	this->sqr.setSize(sf::Vector2f(100.0f, 100.0f));
+	this->sqr.setFillColor(sf::Color::Magenta);
+	this->sqr.setOutlineColor(sf::Color::Black);
+	this->sqr.setOutlineThickness(1.f);
+
+	//initializes private variables
 	this->posX = 0;
 	this->posY = 0;
 	this->coordinateX = 0;
@@ -17,6 +24,7 @@ Square::Square()
 
 Square::~Square()
 {
+
 }
 
 std::pair<int, int> Square::getCoordinates()

@@ -24,7 +24,7 @@ class Square
 		void initVariables(); //initializes the private variables 
 
 	public:
-
+		sf::RectangleShape sqr;
 	//Constructors / Destructors
 
 		Square();

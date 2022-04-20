@@ -17,12 +17,12 @@ class Piece
 
 	public:
 
-	sf::RectangleShape piece;
+		sf::RectangleShape piece;
 
 	//Constructors / Destructors
-
-	Piece();
-	~Piece();
+	
+		Piece();
+		~Piece();
 
 	//Methods
 };
