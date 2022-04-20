@@ -32,10 +32,10 @@ std::pair<int, int> Square::getCoordinates()
 	return std::make_pair(coordinateX, coordinateY);
 }
 
-void Square::setCoordinates(int new_posX, int new_posY)
+void Square::setCoordinates(int new_coordinateX, int new_coordinateY)
 {
-	this->posX = new_posX;
-	this->posY = new_posY;
+	this->coordinateX = new_coordinateX;
+	this->coordinateY = new_coordinateY;
 }
 
 std::pair<int, int> Square::getPosition()
@@ -47,6 +47,7 @@ void Square::setPosition(int new_posX, int new_posY)
 {
 	this->posX = new_posX;
 	this->posY = new_posY;
+	sqr.setPosition(posX, posY);
 }
 
 void Square::setSquareColorToWhite()
@@ -57,6 +58,11 @@ void Square::setSquareColorToWhite()
 void Square::setSquareColorToBlack()
 {
 	this->isWhite = false;
+}
+
+void Square::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	target.draw(sqr);
 }
 
 

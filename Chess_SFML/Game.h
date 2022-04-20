@@ -12,6 +12,7 @@
 	A class acting as a game manager/game engine.
 
 */
+
 class Game
 {
 private:
@@ -21,7 +22,7 @@ private:
 	sf::Event e;
 	
 	//Game objects
-	Board board;
+	Board boardGameObject;
 	
 	//Private methods
 	void initVariables();
@@ -37,7 +38,9 @@ public:
 	void pollEvents();
 	void update();
 	void render(); 
-	//void initBoard();
 	//void initInterface();
+
+
+
 };
 

@@ -7,7 +7,7 @@
 	A square can be occupied by a chess piece.
 */
 
-class Square
+class Square : public sf::Drawable
 {
 	private:
 
@@ -21,10 +21,14 @@ class Square
 
 	//Private methods
 
-		void initVariables(); //initializes the private variables 
+		//Initializes private variables 
+		void initVariables();
 
 	public:
+
+	//Visual representation of the square
 		sf::RectangleShape sqr;
+
 	//Constructors / Destructors
 
 		Square();
@@ -49,7 +53,7 @@ class Square
 		void setSquareColorToBlack();
 
 		//draws the square on the screen
-		void draw();
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 };
 

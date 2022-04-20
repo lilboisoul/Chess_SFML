@@ -7,12 +7,14 @@
 	It is used as a background for Squares.
 */
 
-class Board
+class Board : public sf::Drawable
 {		
-public:
-	//Public variables 
+public: 
 
-		Square board[8][8];
+	//An array containing 64 squares in 8 rows and 8 columns
+		Square array_of_squares[8][8];
+
+	//Visual representation of the board
 		sf::RectangleShape brd;
 
 	//Constructors / Destructors
@@ -26,7 +28,7 @@ public:
 		void initBoard();
 
 	//draws the board on the screen
-		void draw();
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	
 
 

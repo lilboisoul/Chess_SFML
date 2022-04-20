@@ -11,13 +11,14 @@ Game::Game()
 void Game::initVariables()
 {
 	this->window = nullptr;
-	this->board.initBoard();
+	this->boardGameObject.initBoard();
 }
 
 void Game::initWindow()
 {
 	this->videomode.width = 1024; //width of the game window
 	this->videomode.height = 900; //height of the game window
+	//this->window->setFramerateLimit(120);
 	this->window = new sf::RenderWindow (this->videomode, "Chess", sf::Style::Titlebar | sf::Style::Close);
 }
 
@@ -57,10 +58,10 @@ void Game::update()
 void Game::render()
 {
 	this->window->clear(sf::Color(255,255, 255, 255));
-	this->window->draw(this->board.brd);
-	this->window->draw(this->board.board);
+	this->window->draw(this->boardGameObject);
 	this->window->display();
 }
+
 
 Game::~Game()
 {
