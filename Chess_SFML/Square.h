@@ -27,7 +27,7 @@ class Square : public sf::Drawable
 	public:
 
 	//Visual representation of the square
-		sf::RectangleShape sqr;
+		sf::RectangleShape squareGameObject;
 
 	//Constructors / Destructors
 

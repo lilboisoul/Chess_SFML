@@ -12,10 +12,10 @@ class Board : public sf::Drawable
 public: 
 
 	//An array containing 64 squares in 8 rows and 8 columns
-		Square array_of_squares[8][8];
+		Square arrayOfSquares[8][8];
 
 	//Visual representation of the board
-		sf::RectangleShape brd;
+		sf::RectangleShape boardGameObject;
 
 	//Constructors / Destructors
 
@@ -24,8 +24,10 @@ public:
 
 	//Public methods
 
-	//initializes the squares in the array
+	//initializes the board
 		void initBoard();
+		void initArrayOfSquares();
+
 
 	//draws the board on the screen
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
