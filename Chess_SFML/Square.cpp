@@ -15,6 +15,7 @@ void Square::initVariables()
 	this->coordinateY = 0;
 	this->isWhite = false;
 	this->isOccupied = false;
+	this->piecePtr = nullptr;
 }
 
 Square::Square()
@@ -24,7 +25,7 @@ Square::Square()
 
 Square::~Square()
 {
-
+	delete piecePtr;
 }
 
 std::pair<int, int> Square::getCoordinates()
@@ -53,18 +54,28 @@ void Square::setPosition(int new_posX, int new_posY)
 void Square::setSquareColorToWhite()
 {
 	this->isWhite = true;
-	squareGameObject.setFillColor(sf::Color::White);
+	squareGameObject.setFillColor(sf::Color(239, 231, 219, 255));
 }
 
 void Square::setSquareColorToBlack()
 {
 	this->isWhite = false;
-	squareGameObject.setFillColor(sf::Color::Black);
+	squareGameObject.setFillColor(sf::Color(155, 103, 60, 255));
+}
+
+void Square::placePiece(Piece* piece)
+{
+	this->piecePtr = piece;
+	piecePtr->setCoordinates(this->getCoordinates().first, this->getCoordinates().second);
+	piecePtr->setPosition(this->getPosition().first+25, this->getPosition().second+25);
 }
 
 void Square::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(squareGameObject);
+	if (piecePtr != nullptr) {
+		target.draw(piecePtr->pieceGameObject);
+	}
 }
 
 

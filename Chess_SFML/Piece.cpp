@@ -1,15 +1,139 @@
 #include "Piece.h"
 void Piece::initVariables()
 {
-	this->piece.setFillColor(sf::Color(0, 0, 0, 255));
+	this->pieceGameObject.setFillColor(sf::Color::Green);
+	this->pieceGameObject.setSize({ 50, 50 });
+	this->pieceGameObject.setOutlineColor(sf::Color::Black);
+	this->pieceGameObject.setOutlineThickness(15.f);
 }
 
-Piece::Piece()
+Piece::Piece(PieceColor _color) : color(_color)
 {
 	this->initVariables();
+	if (PieceColor::WHITE == color) {
+		this->pieceGameObject.setOutlineColor(sf::Color::White);
+	}
+	if (PieceColor::BLACK == color) {
+		this->pieceGameObject.setOutlineColor(sf::Color::Black);
+	}
 }
 
 Piece::~Piece()
 {
 	
+}
+std::pair<int, int> Piece::getCoordinates()
+{
+	return std::make_pair(coordinateX, coordinateY);
+}
+void Piece::setCoordinates(int new_coordinateX, int new_coordinateY)
+{
+	this->coordinateX = new_coordinateX;
+	this->coordinateY = new_coordinateY;
+}
+std::pair<int, int> Piece::getPosition()
+{
+	return std::make_pair(posX, posY);
+}
+void Piece::setPosition(int new_posX, int new_posY)
+{
+	this->posX = new_posX;
+	this->posY = new_posY;
+	pieceGameObject.setPosition(posX, posY);
+}
+void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	target.draw(pieceGameObject);
+}
+
+//---------------------------------------------------------------------
+void Pawn::initVariables()
+{
+	this->pieceGameObject.setFillColor(sf::Color::Magenta);
+}
+
+Pawn::Pawn(PieceColor _color): Piece(_color)
+{
+	initVariables();
+}
+
+Pawn::~Pawn()
+{
+}
+
+//---------------------------------------------------------------------
+void Knight::initVariables()
+{
+	this->pieceGameObject.setFillColor(sf::Color::Yellow);
+}
+
+Knight::Knight(PieceColor _color) : Piece(_color)
+{
+	initVariables();
+}
+
+Knight::~Knight()
+{
+
+}
+
+//---------------------------------------------------------------------
+void Bishop::initVariables()
+{
+	this->pieceGameObject.setFillColor(sf::Color::Cyan);
+}
+
+Bishop::Bishop(PieceColor _color) : Piece(_color)
+{
+	initVariables();
+}
+
+Bishop::~Bishop()
+{
+
+}
+//---------------------------------------------------------------------
+void Rook::initVariables()
+{
+	this->pieceGameObject.setFillColor(sf::Color::Blue);
+}
+
+Rook::Rook(PieceColor _color) : Piece(_color)
+{
+	initVariables();
+}
+
+Rook::~Rook()
+{
+
+}
+//---------------------------------------------------------------------
+void Queen::initVariables()
+{
+	this->pieceGameObject.setFillColor(sf::Color::Red);
+}
+
+Queen::Queen(PieceColor _color) : Piece(_color)
+{
+	initVariables();
+}
+
+Queen::~Queen()
+{
+
+}
+//---------------------------------------------------------------------
+void King::initVariables()
+{
+	this->pieceGameObject.setFillColor(sf::Color(255, 128, 128, 255));
+}
+
+King::King(PieceColor _color) : Piece(_color)
+{
+	initVariables();
+}
+
+King::~King()
+{
+
 }

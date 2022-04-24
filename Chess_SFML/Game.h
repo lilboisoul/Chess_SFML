@@ -3,14 +3,14 @@
 #include "SFML\Window.hpp"
 #include "SFML\System.hpp"
 #include "SFML\Audio.hpp"
-
+#include <vector>
 #include "Board.h"
 #include "Square.h"
 #include "Piece.h"
 
+
 /*
 	A class acting as a game manager/game engine.
-
 */
 
 class Game
@@ -25,19 +25,19 @@ private:
 	Board boardGameObject;
 	
 	//Private methods
+	void gameLoop();
 	void initVariables();
 	void initWindow();
-	void gameLoop();
 public:
 	//Constructors / Destructors
 	Game();
 	~Game();
 	//Getters / Setters
-	const bool running() const;
 	//Methods
 	void pollEvents();
 	void update();
 	void render(); 
+	const bool running() const;
 	//void initInterface();
 
 

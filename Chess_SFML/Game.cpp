@@ -22,6 +22,7 @@ void Game::initWindow()
 	this->window = new sf::RenderWindow (this->videomode, "Chess", sf::Style::Titlebar | sf::Style::Close);
 }
 
+
 void Game::gameLoop()
 {
 	while (this->running())

@@ -16,8 +16,8 @@ class Square : public sf::Drawable
 		int posX, posY; //position on the screen [pixels]
 		int coordinateX, coordinateY; //coordinates of the square in relation to the board itself [1-8][1-8]
 		bool isOccupied; //determines whether a square is occupied by a chess piece
-		bool isWhite; 
-		Piece piece;
+		bool isWhite;
+		Piece* piecePtr;
 
 	//Private methods
 
@@ -51,6 +51,9 @@ class Square : public sf::Drawable
 		//sets the square color to white or black
 		void setSquareColorToWhite();
 		void setSquareColorToBlack();
+
+		//initializes a piece from the FEN code
+		void placePiece(Piece* piece);
 
 		//draws the square on the screen
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
