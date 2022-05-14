@@ -92,15 +92,17 @@ void Board::convertFENIntoPieces()
 			if (row == 0 && column == 8) break; //checks for the end of piece placement section of the FEN code
 		}
 	}
-	for (int i = 0; i < 8; i++)
+	//displays the board in the console
+	/*for (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < 8; j++)
 		{
 			std::cout << fenPosition[i][j] << " ";
 		}
 		std::cout << "\n";
-	}
-	//converts the two-dimensional character array into pieces
+	}*/
+
+	//converts the two-dimensional character array into Piece pointers
 	for (int i = 8; i > 0; i--)
 	{
 		for (int j = 0; j < 8; j++)
@@ -108,11 +110,11 @@ void Board::convertFENIntoPieces()
 			switch (fenPosition[i-1][j])
 			{
 			case 'p':
-				arrayOfSquares[i-1][j].placePiece(new Pawn(PieceColor::WHITE));
+				arrayOfSquares[i - 1][j].placePiece(new Pawn(PieceColor::WHITE));
 				break;
 
 			case 'P':
-				arrayOfSquares[i-1][j].placePiece(new Pawn(PieceColor::BLACK));
+				arrayOfSquares[i - 1][j].placePiece(new Pawn(PieceColor::BLACK));
 				break;
 
 			case 'r':
