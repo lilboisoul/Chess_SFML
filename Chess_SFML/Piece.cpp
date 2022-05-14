@@ -4,16 +4,16 @@ void Piece::initVariables()
 	this->pieceGameObject.setFillColor(sf::Color::Green);
 	this->pieceGameObject.setSize({ 50, 50 });
 	this->pieceGameObject.setOutlineColor(sf::Color::Black);
-	this->pieceGameObject.setOutlineThickness(15.f);
+	this->pieceGameObject.setOutlineThickness(5.f);
 }
 
-Piece::Piece(PieceColor _color) : color(_color)
+Piece::Piece(PieceColor _color) : pieceColor(_color)
 {
 	this->initVariables();
-	if (PieceColor::WHITE == color) {
+	if (PieceColor::WHITE == pieceColor) {
 		this->pieceGameObject.setOutlineColor(sf::Color::White);
 	}
-	if (PieceColor::BLACK == color) {
+	if (PieceColor::BLACK == pieceColor) {
 		this->pieceGameObject.setOutlineColor(sf::Color::Black);
 	}
 }

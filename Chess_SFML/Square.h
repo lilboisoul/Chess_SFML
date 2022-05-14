@@ -6,7 +6,10 @@
 	A class representing a square on a chessboard.
 	A square can be occupied by a chess piece.
 */
-
+enum class SquareColor {
+	WHITE,
+	BLACK
+};
 class Square : public sf::Drawable
 {
 	private:
@@ -14,9 +17,8 @@ class Square : public sf::Drawable
 	//Private variables
 
 		int posX, posY; //position on the screen [pixels]
-		int coordinateX, coordinateY; //coordinates of the square in relation to the board itself [1-8][1-8]
-		bool isOccupied; //determines whether a square is occupied by a chess piece
-		bool isWhite;
+		std::pair<char, int> boardPos;
+		SquareColor squareColor;
 		Piece* piecePtr;
 
 	//Private methods
@@ -30,17 +32,11 @@ class Square : public sf::Drawable
 		sf::RectangleShape squareGameObject;
 
 	//Constructors / Destructors
-
 		Square();
+		Square(SquareColor _color);
 		~Square();
 
 	//Methods
-	
-		//returns the coordinates of the square as a pair: <coordinateX, coordinateY>
-		std::pair<int, int> getCoordinates();
-
-		//sets the coordinates of a square
-		void setCoordinates(int new_coordinateX, int new_coordinateY); 
 
 		//returns the position of the square as a pair: <posX, posY>
 		std::pair<int, int> getPosition(); 

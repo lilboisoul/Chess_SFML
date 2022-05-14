@@ -12,7 +12,9 @@
 class Board : public sf::Drawable
 {		
 private:
+
 	void convertFENIntoPieces();
+
 public: 
 
 	//An array containing 64 squares in 8 rows and 8 columns
@@ -28,13 +30,14 @@ public:
 
 	//Public methods
 
-	//initializes the board
-		void initBoard();
-		void initArrayOfSquares();
+		//initializes the board
+			void initBoard();
+			void initArrayOfSquares();
 		
 
-	//draws the board on the screen
-		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+		//draws the board on the screen
+
+			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	
 
 

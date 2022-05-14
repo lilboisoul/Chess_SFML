@@ -26,7 +26,7 @@ class Piece : public sf::Drawable
 		sf::RectangleShape pieceGameObject;
 		int posX, posY; //position on the screen [pixels]
 		int coordinateX, coordinateY; //coordinates of the square in relation to the board itself [1-8][1-8]
-		PieceColor color;
+		PieceColor pieceColor;
 	//Constructors / Destructors
 		
 		Piece(PieceColor _color);
@@ -47,6 +47,7 @@ class Piece : public sf::Drawable
 
 
 		virtual void getName() = 0;
+		virtual void getLegalMoves() = 0;
 		//draws the piece on the screen
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
@@ -65,6 +66,7 @@ public:
 
 	//draw the pawn on the screen
 	void getName() { std::cout << "pawn\n"; };
+	void getLegalMoves() { std::cout << "legalmoves\n"; };
 };
 
 class Knight : public Piece
@@ -80,7 +82,7 @@ public:
 
 	//draw the pawn on the screen
 	void getName() { std::cout << "knight\n"; };
-
+	void getLegalMoves() { std::cout << "legalmoves\n"; };
 };
 
 class Bishop : public Piece
@@ -96,6 +98,7 @@ public:
 
 	//draw the pawn on the screen
 	void getName() { std::cout << "bishop\n"; };
+	void getLegalMoves() { std::cout << "legalmoves\n"; };
 };
 
 class Rook : public Piece
@@ -111,6 +114,7 @@ public:
 
 	//draw the pawn on the screen
 	void getName() { std::cout << "rook\n"; };
+	void getLegalMoves() { std::cout << "legalmoves\n"; };
 };
 
 class Queen : public Piece
@@ -126,6 +130,7 @@ public:
 
 	//draw the pawn on the screen
 	void getName() { std::cout << "queen\n"; };
+	void getLegalMoves() { std::cout << "legalmoves\n"; };
 };
 
 class King : public Piece
@@ -141,4 +146,5 @@ public:
 
 	//draw the pawn on the screen
 	void getName() { std::cout << "king\n"; };
+	void getLegalMoves() { std::cout << "legalmoves\n"; };
 };

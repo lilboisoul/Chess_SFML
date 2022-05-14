@@ -33,11 +33,12 @@ void Game::gameLoop()
 	}
 }
 
+
 void Game::pollEvents()
 {
-	while (this->window->pollEvent(this->e))
+	while (this->window->pollEvent(this->sfevent))
 	{
-		switch (this->e.type)
+		switch (this->sfevent.type)
 		{
 		//closes the app when the user clicks the "X" button in the upper right corner
 		case sf::Event::Closed:
@@ -45,15 +46,21 @@ void Game::pollEvents()
 			break;
 		//closes the app when 'Escape' is pressed
 		case sf::Event::KeyPressed:
-			if (this->e.key.code == sf::Keyboard::Escape) this->window->close();
+			if (this->sfevent.key.code == sf::Keyboard::Escape) this->window->close();
 			break;
 		}
 	}
 }
 
+void Game::updateMousePositions()
+{
+	this->mousePosWindow = sf::Mouse::getPosition(*this->window);
+}
+
 void Game::update()
 {
 	this->pollEvents();
+	this->updateMousePositions();
 }
 
 void Game::render()
