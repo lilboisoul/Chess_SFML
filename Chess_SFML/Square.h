@@ -38,18 +38,16 @@ class Square : public sf::Drawable
 
 	//Methods
 
-		//returns the position of the square as a pair: <posX, posY>
-		std::pair<int, int> getPosition(); 
-
-		//sets the position of a square
-		void setPosition(int new_posX, int new_posY); 
-
-		//sets the square color to white or black
-		void setSquareColorToWhite();
-		void setSquareColorToBlack();
-
+		std::pair<int, int>  getPosition(); 
+		void				 setPosition(int new_posX, int new_posY); 
+		std::pair<char, int> getBoardPos();
+		void				 setBoardPos(int new_posX, int new_posY);
+		void				 setSquareColorToWhite();
+		void				 setSquareColorToBlack();
 		//initializes a piece from the FEN code
-		void placePiece(Piece* piece);
+		void				 placePiece(Piece* piece);
+
+		
 
 		//draws the square on the screen
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

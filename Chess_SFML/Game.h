@@ -23,7 +23,7 @@ private:
 	sf::RenderWindow* window;
 	sf::Event		  sfevent;
 	sf::Vector2i      mousePosWindow;
-	
+
 	//Game objects
 	Board boardGameObject;
 	

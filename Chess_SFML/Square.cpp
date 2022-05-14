@@ -47,6 +47,17 @@ void Square::setPosition(int new_posX, int new_posY)
 	squareGameObject.setPosition(posX, posY);
 }
 
+std::pair<char, int> Square::getBoardPos()
+{
+	return this->boardPos;
+}
+
+void Square::setBoardPos(int new_posX, int new_posY)
+{
+	this->boardPos.first = 'a' + static_cast<char>(new_posX);
+	this->boardPos.second= new_posY;
+}
+
 void Square::setSquareColorToWhite()
 {
 	this->squareColor = SquareColor::WHITE;

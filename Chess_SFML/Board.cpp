@@ -29,15 +29,15 @@ void Board::initArrayOfSquares()
 			}
 			temporaryNumber++;
 
-			//std::cout << "<" << board[i][j].getCoordinates().first << " " << board[i][j].getCoordinates().second << "> ";
 			
 			//sets the position of squares on the board in pixels
 			this->arrayOfSquares[i][j].setPosition(boardGameObject.getPosition().x + 100 * j, boardGameObject.getPosition().y + 100 * i);
-			
+			this->arrayOfSquares[i][j].setBoardPos(j, 8-i);
+			//std::cout << "" << arrayOfSquares[i][j].getBoardPos().first << arrayOfSquares[i][j].getBoardPos().second << " ";
 			//std::cout << "{" << array_of_squares[i][j].getPosition().first << " " << array_of_squares[i][j].getPosition().second << "} ";
 		}
 		temporaryNumber++;
-		//std::cout << "\n";
+		std::cout << "\n";
 	}
 }
 
@@ -57,6 +57,8 @@ void Board::convertFENIntoPieces()
 {
 	//converts a FEN notation from a file into a two-dimensional character array
 	std::filesystem::path path = std::filesystem::current_path().append("fen.txt");
+
+	//temporary variables
 	char temporaryCharacter;
 	int row = 7, column = 0;
 
@@ -69,7 +71,8 @@ void Board::convertFENIntoPieces()
 			fenPosition[i][j] = '-';
 		}
 	}
-	//checks is the FEN file is present and if it is, starts converting
+
+	//if FEN file exists, convert
 	if (std::filesystem::exists(path)) {
 		std::ifstream plik(path);
 		while (plik >> temporaryCharacter)
@@ -92,6 +95,30 @@ void Board::convertFENIntoPieces()
 			if (row == 0 && column == 8) break; //checks for the end of piece placement section of the FEN code
 		}
 	}
+	//if FEN file doesn't exist, load the default position
+	else {
+		const char* defaultFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+		for(int i = 0; i < 42; i++)
+		{
+			temporaryCharacter = defaultFEN[i];
+			if (temporaryCharacter >= 'a' && temporaryCharacter <= 'z' || temporaryCharacter >= 'A' && temporaryCharacter <= 'Z')
+			{
+				fenPosition[row][column] = temporaryCharacter;
+
+				column++;
+			}
+			else if (temporaryCharacter == '/')
+			{
+				row--;
+				column = 0;
+			}
+			else {
+				column += static_cast<int>(temporaryCharacter - 48);
+			}
+			if (row == 0 && column == 8) break; //checks for the end of piece placement section of the FEN code
+		}
+	}
+
 	//displays the board in the console
 	/*for (int i = 0; i < 8; i++)
 	{
@@ -102,7 +129,7 @@ void Board::convertFENIntoPieces()
 		std::cout << "\n";
 	}*/
 
-	//converts the two-dimensional character array into Piece pointers
+	//converts array into Piece pointers
 	for (int i = 8; i > 0; i--)
 	{
 		for (int j = 0; j < 8; j++)
@@ -171,6 +198,7 @@ Board::Board()
 	this->initArrayOfSquares();
 	this->convertFENIntoPieces();
 }
+
 
 Board::~Board()
 {

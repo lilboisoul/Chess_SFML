@@ -30,14 +30,15 @@ public:
 
 	//Public methods
 
-		//initializes the board
-			void initBoard();
-			void initArrayOfSquares();
-		
+	//initializes the board
+		void initBoard();
+	//initializes the Square array
+		void initArrayOfSquares();
+	
 
-		//draws the board on the screen
+	//draws the board on the screen
 
-			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	
 
 
