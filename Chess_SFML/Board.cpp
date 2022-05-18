@@ -1,5 +1,16 @@
 #include "Board.h"
 
+Board::Board()
+{
+	this->initBoard();
+	this->initArrayOfSquares();
+	this->convertFENIntoPieces();
+}
+
+Board::~Board()
+{
+}
+
 void Board::initBoard()
 {
 	//initializes the board 
@@ -192,14 +203,3 @@ void Board::convertFENIntoPieces()
 
 }
 
-Board::Board()
-{
-	this->initBoard();
-	this->initArrayOfSquares();
-	this->convertFENIntoPieces();
-}
-
-
-Board::~Board()
-{
-}

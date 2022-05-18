@@ -22,8 +22,8 @@ private:
 	sf::VideoMode     videomode;
 	sf::RenderWindow* window;
 	sf::Event		  sfevent;
-	sf::Vector2i      mousePosWindow;
-
+	sf::Vector2i      mousePosInWindow;
+	bool			  timeToMove;
 	//Game objects
 	Board boardGameObject;
 	
@@ -31,6 +31,9 @@ private:
 	void gameLoop();
 	void initVariables();
 	void initWindow();
+	void waitingForMove();
+	void move();
+
 
 public:
 
@@ -41,6 +44,8 @@ public:
 	//Methods
 	void pollEvents();
 	void updateMousePositions();
+	void setMove(bool _move);
+	bool getTimeToMove();
 	void update();
 	void render(); 
 	const bool running() const;

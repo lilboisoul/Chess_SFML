@@ -25,7 +25,6 @@ class Piece : public sf::Drawable
 	public:
 		sf::RectangleShape pieceGameObject;
 		int posX, posY; //position on the screen [pixels]
-		int coordinateX, coordinateY; //coordinates of the square in relation to the board itself [1-8][1-8]
 		PieceColor pieceColor;
 	//Constructors / Destructors
 		
@@ -33,19 +32,11 @@ class Piece : public sf::Drawable
 		~Piece();
 
 	//Methods
-		//returns the coordinates of the piece as a pair: <coordinateX, coordinateY>
-		std::pair<int, int> getCoordinates() ;
-
-		//sets the coordinates of a piece
-		void setCoordinates(int new_coordinateX, int new_coordinateY);
-
 		//returns the position of the piece as a pair: <posX, posY>
 		std::pair<int, int> getPosition();
 
 		//sets the position of a piece
 		void setPosition(int new_posX, int new_posY);
-
-
 		virtual void getName() = 0;
 		virtual void getLegalMoves() = 0;
 		//draws the piece on the screen

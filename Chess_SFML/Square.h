@@ -20,6 +20,7 @@ class Square : public sf::Drawable
 		std::pair<char, int> boardPos;
 		SquareColor squareColor;
 		Piece* piecePtr;
+		bool isClicked;
 
 	//Private methods
 
@@ -39,15 +40,19 @@ class Square : public sf::Drawable
 	//Methods
 
 		std::pair<int, int>  getPosition(); 
-		void				 setPosition(int new_posX, int new_posY); 
+		void setPosition(int new_posX, int new_posY); 
 		std::pair<char, int> getBoardPos();
-		void				 setBoardPos(int new_posX, int new_posY);
-		void				 setSquareColorToWhite();
-		void				 setSquareColorToBlack();
+		void setBoardPos(int new_posX, int new_posY);
+		void setSquareColorToWhite();
+		void setSquareColorToBlack();
+		SquareColor getSquareColor();
+		bool isSquareClicked();
+		void squareClicked();
+		void squareUnclicked();
 		//initializes a piece from the FEN code
-		void				 placePiece(Piece* piece);
 
-		
+		void placePiece(Piece* piece);
+		void move(Square* new_square);
 
 		//draws the square on the screen
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

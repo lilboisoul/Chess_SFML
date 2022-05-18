@@ -22,15 +22,7 @@ Piece::~Piece()
 {
 	
 }
-std::pair<int, int> Piece::getCoordinates()
-{
-	return std::make_pair(coordinateX, coordinateY);
-}
-void Piece::setCoordinates(int new_coordinateX, int new_coordinateY)
-{
-	this->coordinateX = new_coordinateX;
-	this->coordinateY = new_coordinateY;
-}
+
 std::pair<int, int> Piece::getPosition()
 {
 	return std::make_pair(posX, posY);
@@ -41,6 +33,7 @@ void Piece::setPosition(int new_posX, int new_posY)
 	this->posY = new_posY;
 	pieceGameObject.setPosition(posX, posY);
 }
+
 void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(pieceGameObject);

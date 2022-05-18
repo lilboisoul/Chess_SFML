@@ -12,6 +12,7 @@ void Game::initVariables()
 {
 	this->window = nullptr;
 	this->boardGameObject.initBoard();
+	this->timeToMove = false;
 }
 
 void Game::initWindow()
@@ -21,6 +22,51 @@ void Game::initWindow()
 	//this->window->setFramerateLimit(120);
 	this->window = new sf::RenderWindow (this->videomode, "Chess", sf::Style::Titlebar | sf::Style::Close);
 }
+
+void Game::waitingForMove()
+{
+	for (auto sqr : boardGameObject.arrayOfSquares)
+	{
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)
+			&& mousePosInWindow.x >= sqr->getPosition().first && mousePosInWindow.x <= sqr->getPosition().first + 100
+			&& mousePosInWindow.y >= sqr->getPosition().second && mousePosInWindow.y <= sqr->getPosition().second + 100)
+		{
+			sqr->squareClicked();
+			this->setMove(true);
+			std::cout << "clicked\n";
+			break;
+		}
+
+	}
+
+}
+
+void Game::move()
+{
+	for (auto sqr1 : boardGameObject.arrayOfSquares)
+	{
+		if (sqr1->isSquareClicked() == true)
+		{
+			for (auto sqr2 : boardGameObject.arrayOfSquares)
+			{
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && sqr2 != sqr1 && this->getTimeToMove() == true
+					&& mousePosInWindow.x >= sqr2->getPosition().first && mousePosInWindow.x <= sqr2->getPosition().first + 100
+					&& mousePosInWindow.y >= sqr2->getPosition().second && mousePosInWindow.y <= sqr2->getPosition().second + 100)
+				{
+					sqr1->move(sqr2);
+					sqr1->squareUnclicked();
+					sqr2->squareUnclicked();
+					this->setMove(false);
+					std::cout << "moved from " << sqr1->getBoardPos().first << sqr1->getBoardPos().second << " to " << sqr2->getBoardPos().first << sqr2->getBoardPos().second << "\n";
+					break;
+				}
+
+			}
+		}
+
+	}
+}
+
 
 
 void Game::gameLoop()
@@ -54,13 +100,25 @@ void Game::pollEvents()
 
 void Game::updateMousePositions()
 {
-	this->mousePosWindow = sf::Mouse::getPosition(*this->window);
+	this->mousePosInWindow = sf::Mouse::getPosition(*this->window);
+	//std::cout << "Mouse pos: " << mousePosInWindow.x << " " << mousePosInWindow.y << "\n";
+}
+
+void Game::setMove(bool _move)
+{
+	this->timeToMove = _move;
+}
+bool Game::getTimeToMove()
+{
+	return this->timeToMove;
 }
 
 void Game::update()
 {
 	this->pollEvents();
 	this->updateMousePositions();
+	this->waitingForMove();
+	this->move();
 }
 
 void Game::render()
