@@ -161,6 +161,7 @@
     <ClCompile Include="Piece.cpp">
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
+    <ClCompile Include="Resources.cpp" />
     <ClCompile Include="Square.cpp">
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
@@ -173,6 +174,7 @@
     <ClInclude Include="Piece.h">
       <DeploymentContent>true</DeploymentContent>
     </ClInclude>
+    <ClInclude Include="Resources.h" />
     <ClInclude Include="Square.h">
       <DeploymentContent>true</DeploymentContent>
     </ClInclude>

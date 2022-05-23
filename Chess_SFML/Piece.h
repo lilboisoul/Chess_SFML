@@ -37,6 +37,7 @@ class Piece : public sf::Drawable
 
 		//sets the position of a piece
 		void setPosition(int new_posX, int new_posY);
+		void setTexture(sf::Texture* texture);
 		virtual void getName() = 0;
 		virtual void getLegalMoves() = 0;
 		//draws the piece on the screen

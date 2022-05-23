@@ -1,7 +1,12 @@
 #pragma once
 #include <utility>
 #include "Piece.h"
+#include <iostream>
 
+
+
+
+class Game;
 /*
 	A class representing a square on a chessboard.
 	A square can be occupied by a chess piece.
@@ -21,7 +26,7 @@ class Square : public sf::Drawable
 		SquareColor squareColor;
 		Piece* piecePtr;
 		bool isClicked;
-
+		Game* gamePtr;
 	//Private methods
 
 		//Initializes private variables 
@@ -33,7 +38,7 @@ class Square : public sf::Drawable
 		sf::RectangleShape squareGameObject;
 
 	//Constructors / Destructors
-		Square();
+		Square(Game* _game);
 		Square(SquareColor _color);
 		~Square();
 
@@ -50,11 +55,12 @@ class Square : public sf::Drawable
 		void squareClicked();
 		void squareUnclicked();
 		//initializes a piece from the FEN code
-
+		Piece* getPiecePtr();
 		void placePiece(Piece* piece);
 		void move(Square* new_square);
 
 		//draws the square on the screen
+		virtual inline void update();
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 };

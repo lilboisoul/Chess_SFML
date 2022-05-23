@@ -1,7 +1,7 @@
 #include "Square.h"
+#include "Game.h"
 
-
-Square::Square()
+Square::Square(Game* _game): gamePtr(_game)
 {
 	this->initVariables();
 }
@@ -20,9 +20,10 @@ Square::Square(SquareColor _color) : squareColor(_color)
 Square::~Square()
 {
 	delete piecePtr;
+	delete gamePtr;
 }
 
-void Square::				 initVariables()
+void Square::initVariables()
 {
 	//initializes render values
 	this->squareGameObject.setSize(sf::Vector2f(100.0f, 100.0f));
@@ -42,7 +43,8 @@ std::pair<int, int> Square:: getPosition()
 {
 	return std::make_pair(posX, posY);
 }
-void Square::				 setPosition(int new_posX, int new_posY)
+
+void Square::setPosition(int new_posX, int new_posY)
 {
 	this->posX = new_posX;
 	this->posY = new_posY;
@@ -53,7 +55,7 @@ std::pair<char, int> Square::getBoardPos()
 {
 	return this->boardPos;
 }
-void Square::				 setBoardPos(int new_posX, int new_posY)
+void Square::setBoardPos(int new_posX, int new_posY)
 {
 	this->boardPos.first = 'a' + static_cast<char>(new_posX);
 	this->boardPos.second= new_posY;
@@ -80,12 +82,10 @@ bool Square::isSquareClicked()
 	return this->isClicked;
 }
 
-
-
 void Square::squareClicked()
 {
 	this->isClicked = true;
-	this->squareGameObject.setFillColor(sf::Color(250, 128, 114, 255)); // salmon color
+	this->squareGameObject.setFillColor(sf::Color(250, 128, 114)); // salmon color
 }
 
 void Square::squareUnclicked()
@@ -94,11 +94,16 @@ void Square::squareUnclicked()
 	if (this->squareColor == SquareColor::WHITE) setSquareColorToWhite();
 	else setSquareColorToBlack();
 }
-
+Piece* Square::getPiecePtr() 
+{
+	return this->piecePtr;
+}
 void Square::placePiece(Piece* piece)
 {
 	this->piecePtr = piece;
-	piecePtr->setPosition(this->getPosition().first+25, this->getPosition().second+25);
+	piecePtr->pieceGameObject.setSize({ 100, 100 });
+	piecePtr->pieceGameObject.setOrigin(piecePtr->pieceGameObject.getSize() / 2.0f);
+	piecePtr->pieceGameObject.setPosition(this->getPosition().first+50, this->getPosition().second+50);
 }
 
 void Square::move(Square* new_square)
@@ -106,6 +111,7 @@ void Square::move(Square* new_square)
 	new_square->placePiece(this->piecePtr);
 	this->piecePtr = nullptr;
 }
+
 
 void Square::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
@@ -115,4 +121,13 @@ void Square::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	}
 }
 
+inline void Square::update()
+{
+	//std::cout<< squareGameObject.getGlobalBounds().top << std::endl;
+	if (squareGameObject.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*gamePtr->window))))
+	{
+		//std::cout << squareGameObject.getPosition().x << std::endl;
+	}
+
+}
 

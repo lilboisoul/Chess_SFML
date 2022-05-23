@@ -11,7 +11,10 @@ Game::Game()
 void Game::initVariables()
 {
 	this->window = nullptr;
-	this->boardGameObject.initBoard();
+	this->boardGameObject = new Board(this);
+	this->boardGameObject->initBoard();
+	this->defaultTime = 0.5f;
+	this->timer = defaultTime;
 	this->timeToMove = false;
 }
 
@@ -19,55 +22,79 @@ void Game::initWindow()
 {
 	this->videomode.width = 1024; //width of the game window
 	this->videomode.height = 900; //height of the game window
-	//this->window->setFramerateLimit(120);
 	this->window = new sf::RenderWindow (this->videomode, "Chess", sf::Style::Titlebar | sf::Style::Close);
+	this->window->setFramerateLimit(60);
 }
 
-void Game::waitingForMove()
+
+void Game::waitingForMove(Board& board)
 {
-	for (auto sqr : boardGameObject.arrayOfSquares)
-	{
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)
-			&& mousePosInWindow.x >= sqr->getPosition().first && mousePosInWindow.x <= sqr->getPosition().first + 100
-			&& mousePosInWindow.y >= sqr->getPosition().second && mousePosInWindow.y <= sqr->getPosition().second + 100)
+	if (this->timer <= 0) {
+		for (int i = 0; i < 8; i++)
 		{
-			sqr->squareClicked();
-			this->setMove(true);
-			std::cout << "clicked\n";
-			break;
-		}
-
-	}
-
-}
-
-void Game::move()
-{
-	for (auto sqr1 : boardGameObject.arrayOfSquares)
-	{
-		if (sqr1->isSquareClicked() == true)
-		{
-			for (auto sqr2 : boardGameObject.arrayOfSquares)
+			for (int j = 0; j < 8; j++)
 			{
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && sqr2 != sqr1 && this->getTimeToMove() == true
-					&& mousePosInWindow.x >= sqr2->getPosition().first && mousePosInWindow.x <= sqr2->getPosition().first + 100
-					&& mousePosInWindow.y >= sqr2->getPosition().second && mousePosInWindow.y <= sqr2->getPosition().second + 100)
+				Square* sqr = board.arrayOfSquares[i][j];
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && sqr->getPiecePtr() != nullptr
+					&& mousePosInWindow.x >= sqr->getPosition().first && mousePosInWindow.x <= sqr->getPosition().first + 100
+					&& mousePosInWindow.y >= sqr->getPosition().second && mousePosInWindow.y <= sqr->getPosition().second + 100)
 				{
-					sqr1->move(sqr2);
-					sqr1->squareUnclicked();
-					sqr2->squareUnclicked();
-					this->setMove(false);
-					std::cout << "moved from " << sqr1->getBoardPos().first << sqr1->getBoardPos().second << " to " << sqr2->getBoardPos().first << sqr2->getBoardPos().second << "\n";
+					sqr->squareClicked();
+					this->setMove(true);
+					std::cout << "clicked " << sqr->getBoardPos().first << sqr->getBoardPos().second << "\n";
+					this->timer = 0.5f;
 					break;
 				}
-
 			}
 		}
-
 	}
+	
 }
 
+void Game::move(Board& board)
+{
+	if (this->timer <= 0) {
+		//looking for a clicked square
+		Square* sqr_from = nullptr;
+		for (int i = 0; i < 8; i++)
+		{
+			for (int j = 0; j < 8; j++)
+			{
+				if (board.arrayOfSquares[i][j]->isSquareClicked() == true) {
+					sqr_from = board.arrayOfSquares[i][j];
+					break;
+				}
+			}
+		}
+		//looking for a clicked square other than the first one
+		for (int i = 0; i < 8; i++)
+		{
+			for (int j = 0; j < 8; j++)
+			{
+				Square* sqr_to = board.arrayOfSquares[i][j];
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && sqr_from->getBoardPos() != sqr_to->getBoardPos()
+				&& mousePosInWindow.x >= sqr_to->getPosition().first && mousePosInWindow.x <= sqr_to->getPosition().first + 100
+				&& mousePosInWindow.y >= sqr_to->getPosition().second && mousePosInWindow.y <= sqr_to->getPosition().second + 100)
+				{
+					sqr_from->move(sqr_to);
+					sqr_from->squareUnclicked();
+					sqr_from->squareUnclicked();
+					this->setMove(false);
+					std::cout << "moved from " << sqr_from->getBoardPos().first << sqr_from->getBoardPos().second << " to " << sqr_to->getBoardPos().first << sqr_to->getBoardPos().second << "\n";
+					this->timer = 0.5f;
+					break;
+				}
+			}
+		}
+	}
+	
+	
+}
 
+void Game::calculateDeltaTime()
+{
+	this->deltatime = clock.restart().asSeconds();
+}
 
 void Game::gameLoop()
 {
@@ -115,16 +142,23 @@ bool Game::getTimeToMove()
 
 void Game::update()
 {
+	calculateDeltaTime();
+	this->timer -= deltatime;
+	//std::cout << timer << "\n";
 	this->pollEvents();
 	this->updateMousePositions();
-	this->waitingForMove();
-	this->move();
+
+	//checking for the square movement
+	if (this->timeToMove == false) this->waitingForMove(*this->boardGameObject);
+	else						   this->move(*this->boardGameObject);
+
+	boardGameObject->update();
 }
 
 void Game::render()
 {
 	this->window->clear(sf::Color(255,255, 255, 255));
-	this->window->draw(this->boardGameObject);
+	this->window->draw(*this->boardGameObject);
 	this->window->display();
 }
 
@@ -132,6 +166,7 @@ void Game::render()
 Game::~Game()
 {
 	delete this->window;
+	//delete this->boardGameObject;
 }
 
 const bool Game::running() const

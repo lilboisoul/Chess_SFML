@@ -1,21 +1,12 @@
 #include "Piece.h"
 void Piece::initVariables()
 {
-	this->pieceGameObject.setFillColor(sf::Color::Green);
-	this->pieceGameObject.setSize({ 50, 50 });
-	this->pieceGameObject.setOutlineColor(sf::Color::Black);
-	this->pieceGameObject.setOutlineThickness(5.f);
+	this->pieceGameObject.setSize({ 100, 100 });
 }
 
 Piece::Piece(PieceColor _color) : pieceColor(_color)
 {
 	this->initVariables();
-	if (PieceColor::WHITE == pieceColor) {
-		this->pieceGameObject.setOutlineColor(sf::Color::White);
-	}
-	if (PieceColor::BLACK == pieceColor) {
-		this->pieceGameObject.setOutlineColor(sf::Color::Black);
-	}
 }
 
 Piece::~Piece()
@@ -34,6 +25,11 @@ void Piece::setPosition(int new_posX, int new_posY)
 	pieceGameObject.setPosition(posX, posY);
 }
 
+void Piece::setTexture(sf::Texture* texture)
+{
+	this->pieceGameObject.setTexture(texture);
+}
+
 void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(pieceGameObject);
@@ -42,7 +38,8 @@ void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const
 //---------------------------------------------------------------------
 void Pawn::initVariables()
 {
-	this->pieceGameObject.setFillColor(sf::Color::Magenta);
+	
+	
 }
 
 Pawn::Pawn(PieceColor _color): Piece(_color)
@@ -57,7 +54,7 @@ Pawn::~Pawn()
 //---------------------------------------------------------------------
 void Knight::initVariables()
 {
-	this->pieceGameObject.setFillColor(sf::Color::Yellow);
+	
 }
 
 Knight::Knight(PieceColor _color) : Piece(_color)
@@ -73,7 +70,7 @@ Knight::~Knight()
 //---------------------------------------------------------------------
 void Bishop::initVariables()
 {
-	this->pieceGameObject.setFillColor(sf::Color::Cyan);
+	
 }
 
 Bishop::Bishop(PieceColor _color) : Piece(_color)
@@ -88,7 +85,7 @@ Bishop::~Bishop()
 //---------------------------------------------------------------------
 void Rook::initVariables()
 {
-	this->pieceGameObject.setFillColor(sf::Color::Blue);
+
 }
 
 Rook::Rook(PieceColor _color) : Piece(_color)
@@ -103,7 +100,7 @@ Rook::~Rook()
 //---------------------------------------------------------------------
 void Queen::initVariables()
 {
-	this->pieceGameObject.setFillColor(sf::Color::Red);
+	
 }
 
 Queen::Queen(PieceColor _color) : Piece(_color)
@@ -118,7 +115,7 @@ Queen::~Queen()
 //---------------------------------------------------------------------
 void King::initVariables()
 {
-	this->pieceGameObject.setFillColor(sf::Color(255, 128, 128, 255));
+	
 }
 
 King::King(PieceColor _color) : Piece(_color)

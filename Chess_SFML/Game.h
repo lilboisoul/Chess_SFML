@@ -10,6 +10,7 @@
 #include "Piece.h"
 
 
+
 /*
 	A class acting as a game manager/game engine.
 */
@@ -18,25 +19,32 @@ class Game
 {
 
 private:
-	//Private
+	//Private variables
 	sf::VideoMode     videomode;
-	sf::RenderWindow* window;
 	sf::Event		  sfevent;
 	sf::Vector2i      mousePosInWindow;
 	bool			  timeToMove;
+	
 	//Game objects
-	Board boardGameObject;
+	Board* boardGameObject;
 	
 	//Private methods
 	void gameLoop();
 	void initVariables();
 	void initWindow();
-	void waitingForMove();
-	void move();
+	void waitingForMove(Board& board);
+	void move(Board& board);
+
+	//Delta time management
+	float	  defaultTime;
+	sf::Clock clock;
+	void	  calculateDeltaTime();
+	float	  timer;
+	float	  deltatime;
 
 
 public:
-
+	sf::RenderWindow* window;
 	//Constructors / Destructors
 	Game();
 	~Game();
