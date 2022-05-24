@@ -24,6 +24,7 @@ class Piece : public sf::Drawable
 
 	public:
 		sf::RectangleShape pieceGameObject;
+		std::string name;
 		int posX, posY; //position on the screen [pixels]
 		PieceColor pieceColor;
 	//Constructors / Destructors
@@ -38,7 +39,8 @@ class Piece : public sf::Drawable
 		//sets the position of a piece
 		void setPosition(int new_posX, int new_posY);
 		void setTexture(sf::Texture* texture);
-		virtual void getName() = 0;
+		void writeName();
+		std::string getName();
 		virtual void getLegalMoves() = 0;
 		//draws the piece on the screen
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -50,14 +52,11 @@ class Pawn : public Piece
 private:
 
 	void initVariables();
-
 public:
 	//Constructors / Destructors
 	Pawn(PieceColor _color);
 	~Pawn();
 
-	//draw the pawn on the screen
-	void getName() { std::cout << "pawn\n"; };
 	void getLegalMoves() { std::cout << "legalmoves\n"; };
 };
 
@@ -72,8 +71,7 @@ public:
 	Knight(PieceColor _color);
 	~Knight();
 
-	//draw the pawn on the screen
-	void getName() { std::cout << "knight\n"; };
+
 	void getLegalMoves() { std::cout << "legalmoves\n"; };
 };
 
@@ -88,8 +86,7 @@ public:
 	Bishop(PieceColor _color);
 	~Bishop();
 
-	//draw the pawn on the screen
-	void getName() { std::cout << "bishop\n"; };
+
 	void getLegalMoves() { std::cout << "legalmoves\n"; };
 };
 
@@ -104,8 +101,7 @@ public:
 	Rook(PieceColor _color);
 	~Rook();
 
-	//draw the pawn on the screen
-	void getName() { std::cout << "rook\n"; };
+
 	void getLegalMoves() { std::cout << "legalmoves\n"; };
 };
 
@@ -120,8 +116,7 @@ public:
 	Queen(PieceColor _color);
 	~Queen();
 
-	//draw the pawn on the screen
-	void getName() { std::cout << "queen\n"; };
+
 	void getLegalMoves() { std::cout << "legalmoves\n"; };
 };
 
@@ -136,7 +131,6 @@ public:
 	King(PieceColor _color);
 	~King();
 
-	//draw the pawn on the screen
-	void getName() { std::cout << "king\n"; };
+
 	void getLegalMoves() { std::cout << "legalmoves\n"; };
 };

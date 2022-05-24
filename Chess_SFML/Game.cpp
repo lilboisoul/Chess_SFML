@@ -41,7 +41,7 @@ void Game::waitingForMove(Board& board)
 				{
 					sqr->squareClicked();
 					this->setMove(true);
-					std::cout << "clicked " << sqr->getBoardPos().first << sqr->getBoardPos().second << "\n";
+					std::cout << "Clicked the " << sqr->getBoardPos().first << sqr->getBoardPos().second << " square\n";
 					this->timer = 0.5f;
 					break;
 				}
@@ -73,14 +73,22 @@ void Game::move(Board& board)
 			{
 				Square* sqr_to = board.arrayOfSquares[i][j];
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && sqr_from->getBoardPos() != sqr_to->getBoardPos()
-				&& mousePosInWindow.x >= sqr_to->getPosition().first && mousePosInWindow.x <= sqr_to->getPosition().first + 100
-				&& mousePosInWindow.y >= sqr_to->getPosition().second && mousePosInWindow.y <= sqr_to->getPosition().second + 100)
+					&& mousePosInWindow.x >= sqr_to->getPosition().first && mousePosInWindow.x <= sqr_to->getPosition().first + 100
+					&& mousePosInWindow.y >= sqr_to->getPosition().second && mousePosInWindow.y <= sqr_to->getPosition().second + 100)
 				{
+					if (sqr_to->getPiecePtr() != nullptr) {
+						std::cout << sqr_from->getPiecePtr()->getName() << " from " << sqr_from->getBoardPos().first << sqr_from->getBoardPos().second
+							  << " captured a " << sqr_to->getPiecePtr()->getName() << " on " << sqr_to->getBoardPos().first << sqr_to->getBoardPos().second << "\n";
+					}
+					else {
+						std::cout << sqr_from->getPiecePtr()->getName() << " moved from " << sqr_from->getBoardPos().first << sqr_from->getBoardPos().second
+							<< " to " << sqr_to->getBoardPos().first << sqr_to->getBoardPos().second << "\n";
+					}
 					sqr_from->move(sqr_to);
 					sqr_from->squareUnclicked();
-					sqr_from->squareUnclicked();
+					sqr_to->squareUnclicked();
 					this->setMove(false);
-					std::cout << "moved from " << sqr_from->getBoardPos().first << sqr_from->getBoardPos().second << " to " << sqr_to->getBoardPos().first << sqr_to->getBoardPos().second << "\n";
+
 					this->timer = 0.5f;
 					break;
 				}
@@ -92,7 +100,7 @@ void Game::move(Board& board)
 					
 					sqr_from->squareUnclicked();
 					this->setMove(false);
-					std::cout << "unclicked " << sqr_from->getBoardPos().first << sqr_from->getBoardPos().second << "\n";
+					std::cout << "Unclicked the " << sqr_from->getBoardPos().first << sqr_from->getBoardPos().second << " square\n";
 					this->timer = 0.5f;
 					break;
 				}

@@ -2,6 +2,7 @@
 void Piece::initVariables()
 {
 	this->pieceGameObject.setSize({ 100, 100 });
+	this->name = "";
 }
 
 Piece::Piece(PieceColor _color) : pieceColor(_color)
@@ -30,6 +31,16 @@ void Piece::setTexture(sf::Texture* texture)
 	this->pieceGameObject.setTexture(texture);
 }
 
+void Piece::writeName()
+{
+	std::cout << name;
+}
+
+std::string Piece::getName()
+{
+	return this->name;
+}
+
 void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(pieceGameObject);
@@ -38,8 +49,8 @@ void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const
 //---------------------------------------------------------------------
 void Pawn::initVariables()
 {
-	
-	
+	if (this->pieceColor == PieceColor::WHITE) this->name = "White pawn";
+	else this->name = "Black pawn";
 }
 
 Pawn::Pawn(PieceColor _color): Piece(_color)
@@ -54,7 +65,8 @@ Pawn::~Pawn()
 //---------------------------------------------------------------------
 void Knight::initVariables()
 {
-	
+	if (this->pieceColor == PieceColor::WHITE) this->name = "White knight";
+	else this->name = "Black knight";
 }
 
 Knight::Knight(PieceColor _color) : Piece(_color)
@@ -70,7 +82,8 @@ Knight::~Knight()
 //---------------------------------------------------------------------
 void Bishop::initVariables()
 {
-	
+	if (this->pieceColor == PieceColor::WHITE) this->name = "White bishop";
+	else this->name = "Black bishop";
 }
 
 Bishop::Bishop(PieceColor _color) : Piece(_color)
@@ -85,7 +98,8 @@ Bishop::~Bishop()
 //---------------------------------------------------------------------
 void Rook::initVariables()
 {
-
+	if (this->pieceColor == PieceColor::WHITE) this->name = "White rook";
+	else this->name = "Black rook";
 }
 
 Rook::Rook(PieceColor _color) : Piece(_color)
@@ -100,7 +114,8 @@ Rook::~Rook()
 //---------------------------------------------------------------------
 void Queen::initVariables()
 {
-	
+	if (this->pieceColor == PieceColor::WHITE) this->name = "White queen";
+	else this->name = "Black queen";
 }
 
 Queen::Queen(PieceColor _color) : Piece(_color)
@@ -115,7 +130,8 @@ Queen::~Queen()
 //---------------------------------------------------------------------
 void King::initVariables()
 {
-	
+	if (this->pieceColor == PieceColor::WHITE) this->name = "White king";
+	else this->name = "Black king";
 }
 
 King::King(PieceColor _color) : Piece(_color)
