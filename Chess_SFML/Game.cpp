@@ -84,6 +84,18 @@ void Game::move(Board& board)
 					this->timer = 0.5f;
 					break;
 				}
+				//unclicking the square
+				else if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && sqr_from->getBoardPos() == sqr_to->getBoardPos()
+					&& mousePosInWindow.x >= sqr_to->getPosition().first && mousePosInWindow.x <= sqr_to->getPosition().first + 100
+					&& mousePosInWindow.y >= sqr_to->getPosition().second && mousePosInWindow.y <= sqr_to->getPosition().second + 100)
+				{
+					
+					sqr_from->squareUnclicked();
+					this->setMove(false);
+					std::cout << "unclicked " << sqr_from->getBoardPos().first << sqr_from->getBoardPos().second << "\n";
+					this->timer = 0.5f;
+					break;
+				}
 			}
 		}
 	}
@@ -166,7 +178,6 @@ void Game::render()
 Game::~Game()
 {
 	delete this->window;
-	//delete this->boardGameObject;
 }
 
 const bool Game::running() const
