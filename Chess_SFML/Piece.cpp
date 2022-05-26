@@ -41,6 +41,11 @@ std::string Piece::getName()
 	return this->name;
 }
 
+PieceColor Piece::getPieceColor()
+{
+	return this->pieceColor;
+}
+
 void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(pieceGameObject);

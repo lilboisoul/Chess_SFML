@@ -1,8 +1,19 @@
 #include "Game.h"
-
+#include <string>
+#include <cstdlib>
 
 Game::Game()
 {
+	this->loadFEN("defaultfen.txt");
+	this->initVariables();
+	this->initWindow();
+	this->gameLoop();
+}
+
+Game::Game(std::string FEN_filename)
+{
+	this->currentGameLogic = new GameLogic();
+	this->loadFEN(FEN_filename);
 	this->initVariables();
 	this->initWindow();
 	this->gameLoop();
@@ -11,9 +22,10 @@ Game::Game()
 void Game::initVariables()
 {
 	this->window = nullptr;
-	this->boardGameObject = new Board(this);
+	
+	this->boardGameObject = new Board(this, FEN);
 	this->boardGameObject->initBoard();
-	this->defaultTime = 0.5f;
+	this->defaultTime = 0.1f;
 	this->timer = defaultTime;
 	this->timeToMove = false;
 }
@@ -26,8 +38,71 @@ void Game::initWindow()
 	this->window->setFramerateLimit(60);
 }
 
+void Game::loadFEN(std::string FEN_filename)
+{
+	std::filesystem::path path = std::filesystem::current_path().append(FEN_filename);
+	char tempChar;
+	if (std::filesystem::exists(path)) {
+		std::ifstream plik(path);
+		std::getline(plik, FEN);
+	}
+	convertFEN(FEN);
 
-void Game::waitingForMove(Board& board)
+}
+void Game::convertFEN(std::string FEN)
+{
+	char tempChar = 'x';
+	int tempIndex = 0;
+	std::string FEN_pieces="";
+	std::string FEN_who_moves="";
+	std::string FEN_who_can_castle="";
+	std::string FEN_possible_enpassant_moves = "";
+	//extracting piece-portion of FEN
+	
+	for (size_t i = 0; i < FEN.length(); i++)
+	{
+		if (FEN[i] != ' ') FEN_pieces += FEN[i];
+		else {
+			tempIndex = i+1;
+			break;
+		}
+	}
+	//extracting which player moves on the next turn
+	FEN_who_moves = FEN[tempIndex];
+	tempIndex += 2;
+
+	//extracting castling rights
+	for (size_t i = tempIndex; i < FEN.length(); i++)
+	{
+		if (FEN[i] == 'k' || FEN[i] == 'q' || FEN[i] == 'K' || FEN[i] == 'Q') FEN_who_can_castle += FEN[i];
+		else {
+			tempIndex += 2;
+			break;
+		}
+	}
+	for (size_t i = tempIndex; i < FEN.length(); i++)
+	{
+		if (FEN[i] == '-') {
+			tempIndex += 2;
+			break;
+		}
+		else {
+			FEN_possible_enpassant_moves += FEN[i];
+			FEN_possible_enpassant_moves += FEN[i+1];
+			tempIndex += 3;
+			break;
+		}
+	}
+
+	std::cout << "FEN pieces: " << FEN_pieces << "\nwho moves next: " << FEN_who_moves << "\nwho can castle: " << FEN_who_can_castle << "\npossible en passant moves: " << FEN_possible_enpassant_moves << "\n";
+	if (FEN_who_moves == "w") this->currentGameLogic->setCurrentPlayer(PlayerColor::WHITE);
+	else this->currentGameLogic->setCurrentPlayer(PlayerColor::BLACK);
+
+
+}
+
+
+void Game::waitingForMove(Board& board, GameLogic& logic)
 {
 	if (this->timer <= 0) {
 		for (int i = 0; i < 8; i++)
@@ -35,14 +110,14 @@ void Game::waitingForMove(Board& board)
 			for (int j = 0; j < 8; j++)
 			{
 				Square* sqr = board.arrayOfSquares[i][j];
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && sqr->getPiecePtr() != nullptr
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && sqr->getPiecePtr() != nullptr && ((logic.getCurrentPlayer() == PlayerColor::WHITE && sqr->getPiecePtr()->getPieceColor() == PieceColor::WHITE) || (logic.getCurrentPlayer() == PlayerColor::BLACK && sqr->getPiecePtr()->getPieceColor() == PieceColor::BLACK))
 					&& mousePosInWindow.x >= sqr->getPosition().first && mousePosInWindow.x <= sqr->getPosition().first + 100
 					&& mousePosInWindow.y >= sqr->getPosition().second && mousePosInWindow.y <= sqr->getPosition().second + 100)
 				{
 					sqr->squareClicked();
 					this->setMove(true);
 					std::cout << "Clicked the " << sqr->getBoardPos().first << sqr->getBoardPos().second << " square\n";
-					this->timer = 0.5f;
+					this->timer = defaultTime;
 					break;
 				}
 			}
@@ -51,7 +126,7 @@ void Game::waitingForMove(Board& board)
 	
 }
 
-void Game::move(Board& board)
+void Game::move(Board& board, GameLogic& logic)
 {
 	if (this->timer <= 0) {
 		//looking for a clicked square
@@ -88,8 +163,8 @@ void Game::move(Board& board)
 					sqr_from->squareUnclicked();
 					sqr_to->squareUnclicked();
 					this->setMove(false);
-
-					this->timer = 0.5f;
+					logic.swapCurrentPlayer();
+					this->timer = defaultTime;
 					break;
 				}
 				//unclicking the square
@@ -169,8 +244,8 @@ void Game::update()
 	this->updateMousePositions();
 
 	//checking for the square movement
-	if (this->timeToMove == false) this->waitingForMove(*this->boardGameObject);
-	else						   this->move(*this->boardGameObject);
+	if (this->timeToMove == false) this->waitingForMove(*this->boardGameObject, *this->currentGameLogic);
+	else						   this->move(*this->boardGameObject, *this->currentGameLogic);
 
 	boardGameObject->update();
 }

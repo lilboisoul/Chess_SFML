@@ -157,6 +157,7 @@
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameLogic.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Piece.cpp">
       <DeploymentContent>true</DeploymentContent>
@@ -170,6 +171,7 @@
       <DeploymentContent>true</DeploymentContent>
     </ClInclude>
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameLogic.h" />
     <ClInclude Include="Piece.h">
       <DeploymentContent>true</DeploymentContent>
     </ClInclude>

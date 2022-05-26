@@ -41,6 +41,7 @@ class Piece : public sf::Drawable
 		void setTexture(sf::Texture* texture);
 		void writeName();
 		std::string getName();
+		PieceColor getPieceColor();
 		virtual void getLegalMoves() = 0;
 		//draws the piece on the screen
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

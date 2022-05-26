@@ -8,7 +8,7 @@
 #include "Board.h"
 #include "Square.h"
 #include "Piece.h"
-
+#include "GameLogic.h"
 
 
 /*
@@ -19,21 +19,26 @@ class Game
 {
 
 private:
-	//Private variables
+	//SFML variables
 	sf::VideoMode     videomode;
 	sf::Event		  sfevent;
 	sf::Vector2i      mousePosInWindow;
+
+	//Game logic management
+	GameLogic* currentGameLogic;
 	bool			  timeToMove;
-	
+	std::string		  FEN;
 	//Game objects
-	Board* boardGameObject;
+	Board*			  boardGameObject;
 	
 	//Private methods
 	void gameLoop();
 	void initVariables();
 	void initWindow();
-	void waitingForMove(Board& board);
-	void move(Board& board);
+	void loadFEN(std::string FEN_filename);
+	void convertFEN(std::string FEN);
+	void waitingForMove(Board& board, GameLogic& logic);
+	void move(Board& board, GameLogic& logic);
 
 	//Delta time management
 	float	  defaultTime;
@@ -42,11 +47,14 @@ private:
 	float	  timer;
 	float	  deltatime;
 
+	
+
 
 public:
 	sf::RenderWindow* window;
 	//Constructors / Destructors
 	Game();
+	Game(std::string FEN_filename);
 	~Game();
 	//Getters / Setters
 	//Methods

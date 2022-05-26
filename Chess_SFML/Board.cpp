@@ -1,11 +1,12 @@
 #include "Board.h"
 #include "Game.h"
-Board::Board(Game* _game): gamePtr(_game)
+
+Board::Board(Game* _game, std::string FEN_filename): gamePtr(_game)
 {
 	this->initTextures();
 	this->initBoard();
 	this->initArrayOfSquares();
-	this->convertFENIntoPieces();
+	this->convertFENIntoPieces(FEN_filename);
 }
 
 
@@ -87,6 +88,7 @@ void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const
 }
 void Board::initTextures()
 {
+
 	sf::Texture texture;
 	texture.loadFromFile("PieceTextures/bP.png");
 	textures.insert(std::make_pair("black_pawn", texture));
@@ -112,15 +114,10 @@ void Board::initTextures()
 	textures.insert(std::make_pair("black_knight", texture));
 	texture.loadFromFile("PieceTextures/wN.png");
 	textures.insert(std::make_pair("white_knight", texture));
-	
-
 }
 
-void Board::convertFENIntoPieces()
+void Board::convertFENIntoPieces(std::string FEN)
 {
-	//converts a FEN notation from a file into a two-dimensional character array
-	std::filesystem::path path = std::filesystem::current_path().append("fen.txt");
-
 	//temporary variables
 	char temporaryCharacter;
 	int row = 7, column = 0;
@@ -135,53 +132,29 @@ void Board::convertFENIntoPieces()
 		}
 	}
 
-	//if FEN file exists, convert
-	if (std::filesystem::exists(path)) {
-		std::ifstream plik(path);
-		while (plik >> temporaryCharacter)
-		{
 
-			if (temporaryCharacter >= 'a' && temporaryCharacter <= 'z'|| temporaryCharacter >= 'A' && temporaryCharacter <= 'Z')
-			{
-				fenPosition[row][column] = temporaryCharacter;
-				
-				column++;
-			}
-			else if (temporaryCharacter == '/')
-			{
-				row--;
-				column = 0;
-			}
-			else {
-				column += static_cast<int>(temporaryCharacter - 48);
-			}
-			if (row == 0 && column == 8) break; //checks for the end of piece placement section of the FEN code
+	for (int i = 0; i < FEN.length(); i++)
+	{
+		temporaryCharacter = FEN[i];
+		if (temporaryCharacter >= 'a' && temporaryCharacter <= 'z' || temporaryCharacter >= 'A' && temporaryCharacter <= 'Z')
+		{
+			fenPosition[row][column] = temporaryCharacter;
+
+			column++;
 		}
+		else if (temporaryCharacter == '/')
+		{
+			row--;
+			column = 0;
+		}
+		else {
+			column += static_cast<int>(temporaryCharacter - 48);
+		}
+		if (row == 0 && column == 8) break; //checks for the end of piece placement section of the FEN code
 	}
+	
 	//if FEN file doesn't exist, load the default position
-	else {
-		const char* defaultFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-		for(int i = 0; i < 42; i++)
-		{
-			temporaryCharacter = defaultFEN[i];
-			if (temporaryCharacter >= 'a' && temporaryCharacter <= 'z' || temporaryCharacter >= 'A' && temporaryCharacter <= 'Z')
-			{
-				fenPosition[row][column] = temporaryCharacter;
-
-				column++;
-			}
-			else if (temporaryCharacter == '/')
-			{
-				row--;
-				column = 0;
-			}
-			else {
-				column += static_cast<int>(temporaryCharacter - 48);
-			}
-			if (row == 0 && column == 8) break; //checks for the end of piece placement section of the FEN code
-		}
-	}
-
+	
 	//displays the board in the console
 	/*for (int i = 0; i < 8; i++)
 	{

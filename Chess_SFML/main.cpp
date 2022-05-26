@@ -2,7 +2,7 @@
 #include "Game.h"
 int main()
 {
-	Game game;
+	Game game("fen.txt");
 
 	return 0;
 }

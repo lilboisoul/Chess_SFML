@@ -3,7 +3,10 @@
 #include "Piece.h"
 #include <iostream>
 
-
+enum class SquareColor {
+	WHITE,
+	BLACK
+};
 
 
 class Game;
@@ -11,10 +14,7 @@ class Game;
 	A class representing a square on a chessboard.
 	A square can be occupied by a chess piece.
 */
-enum class SquareColor {
-	WHITE,
-	BLACK
-};
+
 class Square : public sf::Drawable
 {
 	private:

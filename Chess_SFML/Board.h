@@ -15,8 +15,10 @@ class Game;
 class Board : public sf::Drawable
 {		
 private:
+	//FEN -> pieces
+	void convertFENIntoPieces(std::string FEN);
 
-	void convertFENIntoPieces();
+	//Handling textures
 	std::map <std::string, sf::Texture> textures;
 	void initTextures();
 public: 
@@ -30,7 +32,7 @@ public:
 
 	//Constructors / Destructors
 
-		Board(Game* _game);
+		Board(Game* _game, std::string FEN_filename);
 		~Board();
 
 	//Public methods
