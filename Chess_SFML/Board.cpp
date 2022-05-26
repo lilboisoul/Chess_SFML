@@ -33,6 +33,37 @@ void Board::initBoard()
 	
 }
 
+
+void Board::showLegalMoves(std::vector<std::string> legalMoves)
+{
+	for (auto move : legalMoves) {
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++)
+			{
+				Square* sqr = this->arrayOfSquares[i][j];
+				if (sqr->getBoardPosAsString() == move) {
+					sqr->squareGameObject.setOutlineThickness(5.0f);
+				}
+			}
+		}
+	}
+	for (auto i : legalMoves) std::cout << i << " ";
+	std::cout << "\n";
+}
+void Board::unShowLegalMoves()
+{
+
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++)
+		{
+			Square* sqr = this->arrayOfSquares[i][j];
+			if (sqr->squareGameObject.getOutlineThickness() == 5.0f) {
+				sqr->squareGameObject.setOutlineThickness(1.0f);
+			}
+		}
+	}
+}
+
 void Board::initArrayOfSquares()
 {
 	//sets the position and the color of squares in the array
@@ -74,7 +105,6 @@ inline void Board::update()
 		}
 	}
 }
-
 void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(boardGameObject);
@@ -115,7 +145,6 @@ void Board::initTextures()
 	texture.loadFromFile("PieceTextures/wN.png");
 	textures.insert(std::make_pair("white_knight", texture));
 }
-
 void Board::convertFENIntoPieces(std::string FEN)
 {
 	//temporary variables

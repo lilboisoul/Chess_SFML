@@ -1,8 +1,10 @@
 #pragma once
+#include "Square.h"
 enum class PlayerColor {
 	WHITE,
 	BLACK
 };
+
 class GameLogic
 {
 private:
@@ -16,6 +18,7 @@ public:
 	PlayerColor getCurrentPlayer();
 	void  setCurrentPlayer(PlayerColor _color);
 	void  swapCurrentPlayer();
+	bool  checkIfMoveIsLegal(Square& square, Square& square_to);
 
 };
 

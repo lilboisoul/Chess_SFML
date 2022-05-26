@@ -41,7 +41,6 @@ void Game::initWindow()
 void Game::loadFEN(std::string FEN_filename)
 {
 	std::filesystem::path path = std::filesystem::current_path().append(FEN_filename);
-	char tempChar;
 	if (std::filesystem::exists(path)) {
 		std::ifstream plik(path);
 		std::getline(plik, FEN);
@@ -110,13 +109,19 @@ void Game::waitingForMove(Board& board, GameLogic& logic)
 			for (int j = 0; j < 8; j++)
 			{
 				Square* sqr = board.arrayOfSquares[i][j];
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && sqr->getPiecePtr() != nullptr && ((logic.getCurrentPlayer() == PlayerColor::WHITE && sqr->getPiecePtr()->getPieceColor() == PieceColor::WHITE) || (logic.getCurrentPlayer() == PlayerColor::BLACK && sqr->getPiecePtr()->getPieceColor() == PieceColor::BLACK))
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) &&
+					sqr->getPiecePtr() != nullptr &&
+					((logic.getCurrentPlayer() == PlayerColor::WHITE && sqr->getPiecePtr()->getPieceColor() == PieceColor::WHITE)
+					|| (logic.getCurrentPlayer() == PlayerColor::BLACK && sqr->getPiecePtr()->getPieceColor() == PieceColor::BLACK))
 					&& mousePosInWindow.x >= sqr->getPosition().first && mousePosInWindow.x <= sqr->getPosition().first + 100
 					&& mousePosInWindow.y >= sqr->getPosition().second && mousePosInWindow.y <= sqr->getPosition().second + 100)
 				{
 					sqr->squareClicked();
-					this->setMove(true);
+					this->setTimeToMove(true);
+					board.showLegalMoves(sqr->getPiecePtr()->getLegalMoves());
 					std::cout << "Clicked the " << sqr->getBoardPos().first << sqr->getBoardPos().second << " square\n";
+					
+
 					this->timer = defaultTime;
 					break;
 				}
@@ -147,7 +152,9 @@ void Game::move(Board& board, GameLogic& logic)
 			for (int j = 0; j < 8; j++)
 			{
 				Square* sqr_to = board.arrayOfSquares[i][j];
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && sqr_from->getBoardPos() != sqr_to->getBoardPos()
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) 
+					&& logic.checkIfMoveIsLegal(*sqr_from, *sqr_to) == true
+					&& sqr_from->getBoardPos() != sqr_to->getBoardPos()
 					&& mousePosInWindow.x >= sqr_to->getPosition().first && mousePosInWindow.x <= sqr_to->getPosition().first + 100
 					&& mousePosInWindow.y >= sqr_to->getPosition().second && mousePosInWindow.y <= sqr_to->getPosition().second + 100)
 				{
@@ -162,19 +169,23 @@ void Game::move(Board& board, GameLogic& logic)
 					sqr_from->move(sqr_to);
 					sqr_from->squareUnclicked();
 					sqr_to->squareUnclicked();
-					this->setMove(false);
+					board.unShowLegalMoves();
+					this->setTimeToMove(false);
 					logic.swapCurrentPlayer();
+
 					this->timer = defaultTime;
 					break;
 				}
 				//unclicking the square
-				else if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && sqr_from->getBoardPos() == sqr_to->getBoardPos()
+				else if (sf::Mouse::isButtonPressed(sf::Mouse::Left) 
+					&& sqr_from->getBoardPos() == sqr_to->getBoardPos()
 					&& mousePosInWindow.x >= sqr_to->getPosition().first && mousePosInWindow.x <= sqr_to->getPosition().first + 100
 					&& mousePosInWindow.y >= sqr_to->getPosition().second && mousePosInWindow.y <= sqr_to->getPosition().second + 100)
 				{
 					
 					sqr_from->squareUnclicked();
-					this->setMove(false);
+					this->setTimeToMove(false);
+					board.unShowLegalMoves();
 					std::cout << "Unclicked the " << sqr_from->getBoardPos().first << sqr_from->getBoardPos().second << " square\n";
 					this->timer = 0.5f;
 					break;
@@ -226,7 +237,7 @@ void Game::updateMousePositions()
 	//std::cout << "Mouse pos: " << mousePosInWindow.x << " " << mousePosInWindow.y << "\n";
 }
 
-void Game::setMove(bool _move)
+void Game::setTimeToMove(bool _move)
 {
 	this->timeToMove = _move;
 }

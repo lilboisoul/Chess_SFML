@@ -3,6 +3,8 @@
 #include "SFML\Window.hpp"
 #include "SFML\System.hpp"
 #include <iostream>
+#include <vector>
+
 /*
 	A class representing a chess piece.
 
@@ -25,6 +27,7 @@ class Piece : public sf::Drawable
 	public:
 		sf::RectangleShape pieceGameObject;
 		std::string name;
+		std::pair<char, int> boardPos;
 		int posX, posY; //position on the screen [pixels]
 		PieceColor pieceColor;
 	//Constructors / Destructors
@@ -39,10 +42,14 @@ class Piece : public sf::Drawable
 		//sets the position of a piece
 		void setPosition(int new_posX, int new_posY);
 		void setTexture(sf::Texture* texture);
+		void setBoardPos(std::string _boardPos);
+		void setBoardPos(std::pair<char, int> _boardPos);
+		std::pair<char, int> getBoardPos();
+		std::string getBoardPosAsString();
 		void writeName();
 		std::string getName();
 		PieceColor getPieceColor();
-		virtual void getLegalMoves() = 0;
+		virtual std::vector<std::string> getLegalMoves() = 0;
 		//draws the piece on the screen
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
@@ -53,12 +60,13 @@ class Pawn : public Piece
 private:
 
 	void initVariables();
+	bool hasMoved;
 public:
 	//Constructors / Destructors
 	Pawn(PieceColor _color);
 	~Pawn();
 
-	void getLegalMoves() { std::cout << "legalmoves\n"; };
+	std::vector<std::string> getLegalMoves();
 };
 
 class Knight : public Piece
@@ -73,7 +81,7 @@ public:
 	~Knight();
 
 
-	void getLegalMoves() { std::cout << "legalmoves\n"; };
+	std::vector<std::string> getLegalMoves() ;
 };
 
 class Bishop : public Piece
@@ -88,7 +96,7 @@ public:
 	~Bishop();
 
 
-	void getLegalMoves() { std::cout << "legalmoves\n"; };
+	std::vector<std::string> getLegalMoves() ;
 };
 
 class Rook : public Piece
@@ -103,7 +111,7 @@ public:
 	~Rook();
 
 
-	void getLegalMoves() { std::cout << "legalmoves\n"; };
+	std::vector<std::string> getLegalMoves() ;
 };
 
 class Queen : public Piece
@@ -118,7 +126,7 @@ public:
 	~Queen();
 
 
-	void getLegalMoves() { std::cout << "legalmoves\n"; };
+	std::vector<std::string> getLegalMoves();
 };
 
 class King : public Piece
@@ -133,5 +141,5 @@ public:
 	~King();
 
 
-	void getLegalMoves() { std::cout << "legalmoves\n"; };
+	std::vector<std::string> getLegalMoves() ;
 };

@@ -55,6 +55,14 @@ std::pair<char, int> Square::getBoardPos()
 {
 	return this->boardPos;
 }
+std::string Square::getBoardPosAsString()
+{
+	std::string temp = "";
+	temp += boardPos.first;
+	temp += boardPos.second + 48;
+	return temp;
+	
+}
 void Square::setBoardPos(int new_posX, int new_posY)
 {
 	this->boardPos.first = 'a' + static_cast<char>(new_posX);
@@ -94,6 +102,7 @@ void Square::squareUnclicked()
 	if (this->squareColor == SquareColor::WHITE) setSquareColorToWhite();
 	else setSquareColorToBlack();
 }
+
 Piece* Square::getPiecePtr() 
 {
 	return this->piecePtr;
@@ -101,6 +110,7 @@ Piece* Square::getPiecePtr()
 void Square::placePiece(Piece* piece)
 {
 	this->piecePtr = piece;
+	piecePtr->setBoardPos(getBoardPos());
 	piecePtr->pieceGameObject.setSize({ 100, 100 });
 	piecePtr->pieceGameObject.setOrigin(piecePtr->pieceGameObject.getSize() / 2.0f);
 	piecePtr->pieceGameObject.setPosition(this->getPosition().first+50, this->getPosition().second+50);

@@ -11,6 +11,9 @@
 #include "GameLogic.h"
 
 
+
+
+
 /*
 	A class acting as a game manager/game engine.
 */
@@ -60,7 +63,7 @@ public:
 	//Methods
 	void pollEvents();
 	void updateMousePositions();
-	void setMove(bool _move);
+	void setTimeToMove(bool _move);
 	bool getTimeToMove();
 	void update();
 	void render(); 

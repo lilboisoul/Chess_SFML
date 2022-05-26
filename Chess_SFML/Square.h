@@ -47,6 +47,7 @@ class Square : public sf::Drawable
 		std::pair<int, int>  getPosition(); 
 		void setPosition(int new_posX, int new_posY); 
 		std::pair<char, int> getBoardPos();
+		std::string getBoardPosAsString();
 		void setBoardPos(int new_posX, int new_posY);
 		void setSquareColorToWhite();
 		void setSquareColorToBlack();

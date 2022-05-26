@@ -31,6 +31,27 @@ void Piece::setTexture(sf::Texture* texture)
 	this->pieceGameObject.setTexture(texture);
 }
 
+void Piece::setBoardPos(std::string _boardPos)
+{
+	this->boardPos.first = _boardPos[0];
+	this->boardPos.second = _boardPos[1];
+}
+void Piece::setBoardPos(std::pair<char, int> _boardPos)
+{
+	this->boardPos = _boardPos;
+}
+std::pair<char, int> Piece::getBoardPos()
+{
+	return this->boardPos;
+}
+
+std::string Piece::getBoardPosAsString()
+{
+	std::string temp = "";
+	temp += boardPos.first;
+	temp += boardPos.second+48;
+	return temp;
+}
 void Piece::writeName()
 {
 	std::cout << name;
@@ -56,6 +77,7 @@ void Pawn::initVariables()
 {
 	if (this->pieceColor == PieceColor::WHITE) this->name = "White pawn";
 	else this->name = "Black pawn";
+	this->hasMoved = false;
 }
 
 Pawn::Pawn(PieceColor _color): Piece(_color)
@@ -65,6 +87,40 @@ Pawn::Pawn(PieceColor _color): Piece(_color)
 
 Pawn::~Pawn()
 {
+}
+
+std::vector<std::string> Pawn::getLegalMoves()
+{
+	std::vector<std::string> moves;
+	std::string temp="";
+	int one;
+	if (pieceColor == PieceColor::WHITE) one = 1;
+	else one = -1;
+	if (hasMoved == false) {
+		temp += getBoardPos().first;
+		temp += getBoardPos().second + 48 + one*2;
+		moves.push_back(temp);
+		temp = "";
+		temp += getBoardPos().first;
+		temp += getBoardPos().second + 48 + one * 1;
+		moves.push_back(temp);
+		temp = "";
+	}
+	if (hasMoved == true) {
+		temp += getBoardPos().first;
+		temp += getBoardPos().second + 48 + one;
+		moves.push_back(temp);
+		temp = "";
+	}
+	temp += getBoardPos().first + 1;
+	temp += getBoardPos().second + 48 + one;
+	moves.push_back(temp);
+	temp = "";
+	temp += getBoardPos().first - 1;
+	temp += getBoardPos().second + 48 + one;
+	moves.push_back(temp);
+	temp = "";
+	return moves;
 }
 
 //---------------------------------------------------------------------
@@ -84,6 +140,12 @@ Knight::~Knight()
 
 }
 
+std::vector<std::string> Knight::getLegalMoves()
+{
+	std::vector<std::string> moves;
+	return moves;
+}
+
 //---------------------------------------------------------------------
 void Bishop::initVariables()
 {
@@ -99,6 +161,11 @@ Bishop::Bishop(PieceColor _color) : Piece(_color)
 Bishop::~Bishop()
 {
 
+}
+std::vector<std::string> Bishop::getLegalMoves()
+{
+	std::vector<std::string> moves;
+	return moves;
 }
 //---------------------------------------------------------------------
 void Rook::initVariables()
@@ -116,6 +183,11 @@ Rook::~Rook()
 {
 
 }
+std::vector<std::string> Rook::getLegalMoves()
+{
+	std::vector<std::string> moves;
+	return moves;
+}
 //---------------------------------------------------------------------
 void Queen::initVariables()
 {
@@ -132,6 +204,11 @@ Queen::~Queen()
 {
 
 }
+std::vector<std::string> Queen::getLegalMoves()
+{
+	std::vector<std::string> moves;
+	return moves;
+}
 //---------------------------------------------------------------------
 void King::initVariables()
 {
@@ -147,4 +224,10 @@ King::King(PieceColor _color) : Piece(_color)
 King::~King()
 {
 
+}
+
+std::vector<std::string> King::getLegalMoves()
+{
+	std::vector<std::string> moves;
+	return moves;
 }
