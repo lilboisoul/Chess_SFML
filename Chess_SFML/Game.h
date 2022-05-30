@@ -60,6 +60,7 @@ public:
 	Game(std::string FEN_filename);
 	~Game();
 	//Getters / Setters
+	Board* getBoardPtr();
 	//Methods
 	void pollEvents();
 	void updateMousePositions();

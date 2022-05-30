@@ -6,12 +6,12 @@
 #include "SFML\Graphics.hpp"
 
 
-class Game;
 /*
 	A class representing a chessboard - it contains a two-dimensional, 8 by 8 array of Square objects.
 	It is used as a background for Squares.
 */
 
+class Game;
 class Board : public sf::Drawable
 {		
 private:
@@ -37,9 +37,7 @@ public:
 
 	//Public methods
 
-	//initializes the board
 		void initBoard();
-	//initializes the Square array
 		void initArrayOfSquares();
 		void showLegalMoves(std::vector<std::pair<int,int>> legalMoves);
 		void unShowLegalMoves();

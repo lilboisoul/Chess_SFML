@@ -202,6 +202,11 @@ void Game::calculateDeltaTime()
 	this->deltatime = clock.restart().asSeconds();
 }
 
+Board* Game::getBoardPtr()
+{
+	return this->boardGameObject;
+}
+
 void Game::gameLoop()
 {
 	while (this->running())

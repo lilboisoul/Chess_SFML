@@ -4,11 +4,12 @@
 #include "SFML\System.hpp"
 #include <iostream>
 #include <vector>
+
 /*
 	A class representing a chess piece.
 
 */ 
-
+class Game;
 enum class PieceColor{
 	WHITE,
 	BLACK
@@ -24,6 +25,7 @@ class Piece : public sf::Drawable
 		void initVariables();
 
 	public:
+		Game* gamePtr;
 		sf::RectangleShape pieceGameObject;
 		std::string name;
 		std::pair<char, int> boardPos;
@@ -31,7 +33,7 @@ class Piece : public sf::Drawable
 		PieceColor pieceColor;
 	//Constructors / Destructors
 		
-		Piece(PieceColor _color);
+		Piece(Game* _game, PieceColor _color);
 		~Piece();
 
 	//Methods
@@ -49,6 +51,7 @@ class Piece : public sf::Drawable
 		std::string getName();
 		PieceColor getPieceColor();
 		virtual std::vector<std::pair<int, int>> getPossibleMoves() = 0;
+		virtual std::vector<std::pair<int, int>> getLegalMoves(std::vector<std::pair<int, int>>) = 0;
 		//draws the piece on the screen
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
@@ -62,11 +65,12 @@ private:
 	bool hasMoved;
 public:
 	//Constructors / Destructors
-	Pawn(PieceColor _color);
+	Pawn(Game* game, PieceColor _color);
 	~Pawn();
 	void setBoardPos(std::pair<char, int> _boardPos);
 	void setHasMoved();
 	std::vector<std::pair<int, int>> getPossibleMoves();
+	std::vector<std::pair<int, int>> getLegalMoves(std::vector<std::pair<int, int>>);
 };
 
 class Knight : public Piece
@@ -77,11 +81,12 @@ private:
 
 public:
 	//Constructors / Destructors
-	Knight(PieceColor _color);
+	Knight(Game* game, PieceColor _color);
 	~Knight();
 
 
-	std::vector<std::pair<int, int>> getPossibleMoves() ;
+	std::vector<std::pair<int, int>> getPossibleMoves();
+	std::vector<std::pair<int, int>> getLegalMoves(std::vector<std::pair<int, int>>);
 };
 
 class Bishop : public Piece
@@ -92,11 +97,12 @@ private:
 
 public:
 	//Constructors / Destructors
-	Bishop(PieceColor _color);
+	Bishop(Game* game, PieceColor _color);
 	~Bishop();
 
 
-	std::vector<std::pair<int, int>> getPossibleMoves() ;
+	std::vector<std::pair<int, int>> getPossibleMoves();
+	std::vector<std::pair<int, int>> getLegalMoves(std::vector<std::pair<int, int>>);
 };
 
 class Rook : public Piece
@@ -107,11 +113,12 @@ private:
 
 public:
 	//Constructors / Destructors
-	Rook(PieceColor _color);
+	Rook(Game* game, PieceColor _color);
 	~Rook();
 
 
-	std::vector<std::pair<int, int>> getPossibleMoves() ;
+	std::vector<std::pair<int, int>> getPossibleMoves();
+	std::vector<std::pair<int, int>> getLegalMoves(std::vector<std::pair<int, int>>);
 };
 
 class Queen : public Piece
@@ -122,11 +129,12 @@ private:
 
 public:
 	//Constructors / Destructors
-	Queen(PieceColor _color);
+	Queen(Game* game, PieceColor _color);
 	~Queen();
 
 
 	std::vector<std::pair<int, int>> getPossibleMoves();
+	std::vector<std::pair<int, int>> getLegalMoves(std::vector<std::pair<int, int>>);
 };
 
 class King : public Piece
@@ -137,9 +145,10 @@ private:
 
 public:
 	//Constructors / Destructors
-	King(PieceColor _color);
+	King(Game* game, PieceColor _color);
 	~King();
 
 
-	std::vector<std::pair<int, int>> getPossibleMoves() ;
+	std::vector<std::pair<int, int>> getPossibleMoves();
+	std::vector<std::pair<int, int>> getLegalMoves(std::vector<std::pair<int, int>>);
 };

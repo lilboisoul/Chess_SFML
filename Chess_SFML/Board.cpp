@@ -205,62 +205,62 @@ void Board::convertFENIntoPieces(std::string FEN)
 			switch (fenPosition[i-1][j])
 			{
 			case 'p':
-				arrayOfSquares[i - 1][j]->placePiece(new Pawn(PieceColor::WHITE));
+				arrayOfSquares[i - 1][j]->placePiece(new Pawn(gamePtr, PieceColor::WHITE));
 				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("white_pawn"));
 				break;
 
 			case 'P':
-				arrayOfSquares[i - 1][j]->placePiece(new Pawn(PieceColor::BLACK));
+				arrayOfSquares[i - 1][j]->placePiece(new Pawn(gamePtr, PieceColor::BLACK));
 				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("black_pawn"));
 				break;
 
 			case 'r':
-				arrayOfSquares[i - 1][j]->placePiece(new Rook(PieceColor::WHITE));
+				arrayOfSquares[i - 1][j]->placePiece(new Rook(gamePtr, PieceColor::WHITE));
 				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("white_rook"));
 				break;
 
 			case 'R':
-				arrayOfSquares[i - 1][j]->placePiece(new Rook(PieceColor::BLACK));
+				arrayOfSquares[i - 1][j]->placePiece(new Rook(gamePtr, PieceColor::BLACK));
 				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("black_rook"));
 				break;
 
 			case 'n':
-				arrayOfSquares[i - 1][j]->placePiece(new Knight(PieceColor::WHITE));
+				arrayOfSquares[i - 1][j]->placePiece(new Knight(gamePtr, PieceColor::WHITE));
 				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("white_knight"));
 				break;
 
 			case 'N':
-				arrayOfSquares[i - 1][j]->placePiece(new Knight(PieceColor::BLACK));
+				arrayOfSquares[i - 1][j]->placePiece(new Knight(gamePtr, PieceColor::BLACK));
 				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("black_knight"));
 				break;
 
 			case 'b':
-				arrayOfSquares[i - 1][j]->placePiece(new Bishop(PieceColor::WHITE));
+				arrayOfSquares[i - 1][j]->placePiece(new Bishop(gamePtr, PieceColor::WHITE));
 				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("white_bishop"));
 				break;
 
 			case 'B':
-				arrayOfSquares[i - 1][j]->placePiece(new Bishop(PieceColor::BLACK));
+				arrayOfSquares[i - 1][j]->placePiece(new Bishop(gamePtr, PieceColor::BLACK));
 				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("black_bishop"));
 				break;
 
 			case 'q':
-				arrayOfSquares[i - 1][j]->placePiece(new Queen(PieceColor::WHITE));
+				arrayOfSquares[i - 1][j]->placePiece(new Queen(gamePtr, PieceColor::WHITE));
 				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("white_queen"));
 				break;
 
 			case 'Q':
-				arrayOfSquares[i - 1][j]->placePiece(new Queen(PieceColor::BLACK));
+				arrayOfSquares[i - 1][j]->placePiece(new Queen(gamePtr, PieceColor::BLACK));
 				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("black_queen"));
 				break;
 
 			case 'k':
-				arrayOfSquares[i - 1][j]->placePiece(new King(PieceColor::WHITE));
+				arrayOfSquares[i - 1][j]->placePiece(new King(gamePtr, PieceColor::WHITE));
 				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("white_king"));
 				break;
 
 			case 'K':
-				arrayOfSquares[i - 1][j]->placePiece(new King(PieceColor::BLACK));
+				arrayOfSquares[i - 1][j]->placePiece(new King(gamePtr, PieceColor::BLACK));
 				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("black_king"));
 				break;
 			}

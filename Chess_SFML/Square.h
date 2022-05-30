@@ -57,8 +57,8 @@ class Square : public sf::Drawable
 		void squareClicked();
 		void squareUnclicked();
 		//initializes a piece from the FEN code
-		Piece* getPiecePtr();
 		void placePiece(Piece* piece);
+		Piece* getPiecePtr();
 		void move(Square* new_square);
 
 		//draws the square on the screen
