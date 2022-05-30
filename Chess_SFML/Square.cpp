@@ -55,6 +55,10 @@ std::pair<char, int> Square::getBoardPos()
 {
 	return this->boardPos;
 }
+std::pair<int, int> Square::getBoardPosAsInt()
+{
+	return std::make_pair(boardPos.first - 96, boardPos.second);
+}
 std::string Square::getBoardPosAsString()
 {
 	std::string temp = "";
@@ -94,6 +98,7 @@ void Square::squareClicked()
 {
 	this->isClicked = true;
 	this->squareGameObject.setFillColor(sf::Color(250, 128, 114)); // salmon color
+	std::cout << piecePtr->getBoardPos().first << piecePtr->getBoardPos().second << "\n";
 }
 
 void Square::squareUnclicked()
@@ -102,6 +107,7 @@ void Square::squareUnclicked()
 	if (this->squareColor == SquareColor::WHITE) setSquareColorToWhite();
 	else setSquareColorToBlack();
 }
+
 
 Piece* Square::getPiecePtr() 
 {

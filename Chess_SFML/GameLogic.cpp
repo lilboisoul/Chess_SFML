@@ -30,11 +30,10 @@ bool GameLogic::checkIfMoveIsLegal(Square& square_from, Square& square_to)
 {
 	bool isMoveLegal = false;
 	if (square_from.getPiecePtr() != nullptr) {
-		std::vector<std::string> legalmoves = square_from.getPiecePtr()->getLegalMoves();
+		std::vector<std::pair<int,int>> legalmoves = square_from.getPiecePtr()->getPossibleMoves();
 
 		for (int i = 0; i < legalmoves.size(); i++) {
-			if (square_to.getBoardPosAsString() == legalmoves[i]) {
-
+			if (square_to.getBoardPosAsInt() == legalmoves[i]) {
 				isMoveLegal = true;
 				break;
 			}

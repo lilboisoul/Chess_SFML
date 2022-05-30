@@ -4,7 +4,6 @@
 #include "SFML\System.hpp"
 #include <iostream>
 #include <vector>
-
 /*
 	A class representing a chess piece.
 
@@ -43,13 +42,13 @@ class Piece : public sf::Drawable
 		void setPosition(int new_posX, int new_posY);
 		void setTexture(sf::Texture* texture);
 		void setBoardPos(std::string _boardPos);
-		void setBoardPos(std::pair<char, int> _boardPos);
+		virtual void setBoardPos(std::pair<char, int> _boardPos);
 		std::pair<char, int> getBoardPos();
 		std::string getBoardPosAsString();
 		void writeName();
 		std::string getName();
 		PieceColor getPieceColor();
-		virtual std::vector<std::string> getLegalMoves() = 0;
+		virtual std::vector<std::pair<int, int>> getPossibleMoves() = 0;
 		//draws the piece on the screen
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
@@ -65,8 +64,9 @@ public:
 	//Constructors / Destructors
 	Pawn(PieceColor _color);
 	~Pawn();
-
-	std::vector<std::string> getLegalMoves();
+	void setBoardPos(std::pair<char, int> _boardPos);
+	void setHasMoved();
+	std::vector<std::pair<int, int>> getPossibleMoves();
 };
 
 class Knight : public Piece
@@ -81,7 +81,7 @@ public:
 	~Knight();
 
 
-	std::vector<std::string> getLegalMoves() ;
+	std::vector<std::pair<int, int>> getPossibleMoves() ;
 };
 
 class Bishop : public Piece
@@ -96,7 +96,7 @@ public:
 	~Bishop();
 
 
-	std::vector<std::string> getLegalMoves() ;
+	std::vector<std::pair<int, int>> getPossibleMoves() ;
 };
 
 class Rook : public Piece
@@ -111,7 +111,7 @@ public:
 	~Rook();
 
 
-	std::vector<std::string> getLegalMoves() ;
+	std::vector<std::pair<int, int>> getPossibleMoves() ;
 };
 
 class Queen : public Piece
@@ -126,7 +126,7 @@ public:
 	~Queen();
 
 
-	std::vector<std::string> getLegalMoves();
+	std::vector<std::pair<int, int>> getPossibleMoves();
 };
 
 class King : public Piece
@@ -141,5 +141,5 @@ public:
 	~King();
 
 
-	std::vector<std::string> getLegalMoves() ;
+	std::vector<std::pair<int, int>> getPossibleMoves() ;
 };

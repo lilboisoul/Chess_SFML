@@ -118,7 +118,7 @@ void Game::waitingForMove(Board& board, GameLogic& logic)
 				{
 					sqr->squareClicked();
 					this->setTimeToMove(true);
-					board.showLegalMoves(sqr->getPiecePtr()->getLegalMoves());
+					board.showLegalMoves(sqr->getPiecePtr()->getPossibleMoves());
 					std::cout << "Clicked the " << sqr->getBoardPos().first << sqr->getBoardPos().second << " square\n";
 					
 

@@ -41,7 +41,7 @@ public:
 		void initBoard();
 	//initializes the Square array
 		void initArrayOfSquares();
-		void showLegalMoves(std::vector<std::string> legalMoves);
+		void showLegalMoves(std::vector<std::pair<int,int>> legalMoves);
 		void unShowLegalMoves();
 
 	//draws the board on the screen

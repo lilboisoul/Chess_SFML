@@ -34,20 +34,22 @@ void Board::initBoard()
 }
 
 
-void Board::showLegalMoves(std::vector<std::string> legalMoves)
+void Board::showLegalMoves(std::vector<std::pair<int,int>> legalMoves)
 {
 	for (auto move : legalMoves) {
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++)
 			{
 				Square* sqr = this->arrayOfSquares[i][j];
-				if (sqr->getBoardPosAsString() == move) {
-					sqr->squareGameObject.setOutlineThickness(5.0f);
+				
+				if (sqr->getBoardPosAsInt() == move) {
+					sqr->squareGameObject.setFillColor(sf::Color::Red);
+					std::cout << sqr->getBoardPos().first << sqr->getBoardPos().second <<  " ";
+
 				}
 			}
 		}
 	}
-	for (auto i : legalMoves) std::cout << i << " ";
 	std::cout << "\n";
 }
 void Board::unShowLegalMoves()
@@ -57,8 +59,9 @@ void Board::unShowLegalMoves()
 		for (int j = 0; j < 8; j++)
 		{
 			Square* sqr = this->arrayOfSquares[i][j];
-			if (sqr->squareGameObject.getOutlineThickness() == 5.0f) {
-				sqr->squareGameObject.setOutlineThickness(1.0f);
+			if (sqr->squareGameObject.getFillColor() == sf::Color::Red){
+				if (sqr->getSquareColor() == SquareColor::WHITE) sqr->setSquareColorToWhite();
+				else sqr->setSquareColorToBlack();
 			}
 		}
 	}
