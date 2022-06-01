@@ -22,10 +22,8 @@ Game::Game(std::string FEN_filename)
 void Game::initVariables()
 {
 	this->window = nullptr;
-	
 	this->boardGameObject = new Board(this, FEN);
-	this->boardGameObject->initBoard();
-	this->defaultTime = 0.1f;
+	this->defaultTime = 0.2f;
 	this->timer = defaultTime;
 	this->timeToMove = false;
 }
@@ -165,6 +163,10 @@ void Game::move(Board& board, GameLogic& logic)
 					else {
 						std::cout << sqr_from->getPiecePtr()->getName() << " moved from " << sqr_from->getBoardPos().first << sqr_from->getBoardPos().second
 							<< " to " << sqr_to->getBoardPos().first << sqr_to->getBoardPos().second << "\n";
+					}
+					if (sqr_to->getPiecePtr() != nullptr) {
+						if (sqr_to->getPiecePtr()->getPieceColor() == PieceColor::WHITE)std::cout << "bialy" << "\n";
+						else std::cout << "czarny\n";
 					}
 					sqr_from->move(sqr_to);
 					sqr_from->squareUnclicked();

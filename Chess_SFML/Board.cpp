@@ -4,7 +4,7 @@
 Board::Board(Game* _game, std::string FEN_filename): gamePtr(_game)
 {
 	this->initTextures();
-	this->initBoard();
+	this->initBoardVisualProperties();
 	this->initArrayOfSquares();
 	this->convertFENIntoPieces(FEN_filename);
 }
@@ -20,17 +20,13 @@ Board::~Board()
 	}
 }
 
-void Board::initBoard()
+void Board::initBoardVisualProperties()
 {
-	//initializes the board 
-
 	this->boardGameObject.setPosition({ 100, 50 });
 	this->boardGameObject.setSize(sf::Vector2f(800.0f, 800.0f));
 	this->boardGameObject.setFillColor(sf::Color::Yellow);
 	this->boardGameObject.setOutlineColor(sf::Color::Black);
 	this->boardGameObject.setOutlineThickness(2.f);
-
-	
 }
 
 
@@ -70,7 +66,7 @@ void Board::unShowLegalMoves()
 void Board::initArrayOfSquares()
 {
 	//sets the position and the color of squares in the array
-	int temporaryNumber = 0;
+	int temporaryNumber = 1;
 	
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++)
@@ -88,14 +84,15 @@ void Board::initArrayOfSquares()
 
 			
 			//sets the position of squares on the board in pixels
-			this->arrayOfSquares[i][j]->setPosition(boardGameObject.getPosition().x + 100 * j, boardGameObject.getPosition().y + 100 * i);
-			this->arrayOfSquares[i][j]->setBoardPos(j, 8-i);
+			this->arrayOfSquares[i][j]->setPosition(boardGameObject.getPosition().x + 100 * i, boardGameObject.getPosition().y + 100 *(7-j));
+			this->arrayOfSquares[i][j]->setBoardPos(i, j+1);
 			//std::cout << "" << arrayOfSquares[i][j].getBoardPos().first << arrayOfSquares[i][j].getBoardPos().second << " ";
 			//std::cout << "{" << array_of_squares[i][j].getPosition().first << " " << array_of_squares[i][j].getPosition().second << "} ";
 		}
 		temporaryNumber++;
 		std::cout << "\n";
 	}
+
 }
 
 inline void Board::update()
@@ -184,7 +181,14 @@ void Board::convertFENIntoPieces(std::string FEN)
 		}
 		if (row == 0 && column == 8) break; //checks for the end of piece placement section of the FEN code
 	}
-	
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			std::cout << fenPosition[i][j] << " ";
+		}
+		std::cout << "\n";
+	}
 	//if FEN file doesn't exist, load the default position
 	
 	//displays the board in the console
@@ -198,75 +202,77 @@ void Board::convertFENIntoPieces(std::string FEN)
 	}*/
 
 	//converts array into Piece pointers
-	for (int i = 8; i > 0; i--)
+	std::cout << "\n";
+	for (int j = 0; j < 8; j++)
 	{
-		for (int j = 0; j < 8; j++)
+		for (int i = 0; i < 8; i++)
 		{
-			switch (fenPosition[i-1][j])
+			std::cout << fenPosition[7 - j][i] << " ";
+			switch (fenPosition[7 - j][i])
 			{
 			case 'p':
-				arrayOfSquares[i - 1][j]->placePiece(new Pawn(gamePtr, PieceColor::WHITE));
-				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("white_pawn"));
+				arrayOfSquares[i][j]->placePiece(new Pawn(gamePtr, PieceColor::WHITE));
+				arrayOfSquares[i][j]->getPiecePtr()->setTexture(&textures.at("white_pawn"));
 				break;
 
 			case 'P':
-				arrayOfSquares[i - 1][j]->placePiece(new Pawn(gamePtr, PieceColor::BLACK));
-				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("black_pawn"));
+				arrayOfSquares[i][j]->placePiece(new Pawn(gamePtr, PieceColor::BLACK));
+				arrayOfSquares[i][j]->getPiecePtr()->setTexture(&textures.at("black_pawn"));
 				break;
 
 			case 'r':
-				arrayOfSquares[i - 1][j]->placePiece(new Rook(gamePtr, PieceColor::WHITE));
-				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("white_rook"));
+				arrayOfSquares[i][j]->placePiece(new Rook(gamePtr, PieceColor::WHITE));
+				arrayOfSquares[i][j]->getPiecePtr()->setTexture(&textures.at("white_rook"));
 				break;
 
 			case 'R':
-				arrayOfSquares[i - 1][j]->placePiece(new Rook(gamePtr, PieceColor::BLACK));
-				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("black_rook"));
+				arrayOfSquares[i][j]->placePiece(new Rook(gamePtr, PieceColor::BLACK));
+				arrayOfSquares[i][j]->getPiecePtr()->setTexture(&textures.at("black_rook"));
 				break;
 
 			case 'n':
-				arrayOfSquares[i - 1][j]->placePiece(new Knight(gamePtr, PieceColor::WHITE));
-				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("white_knight"));
+				arrayOfSquares[i][j]->placePiece(new Knight(gamePtr, PieceColor::WHITE));
+				arrayOfSquares[i][j]->getPiecePtr()->setTexture(&textures.at("white_knight"));
 				break;
 
 			case 'N':
-				arrayOfSquares[i - 1][j]->placePiece(new Knight(gamePtr, PieceColor::BLACK));
-				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("black_knight"));
+				arrayOfSquares[i][j]->placePiece(new Knight(gamePtr, PieceColor::BLACK));
+				arrayOfSquares[i][j]->getPiecePtr()->setTexture(&textures.at("black_knight"));
 				break;
 
 			case 'b':
-				arrayOfSquares[i - 1][j]->placePiece(new Bishop(gamePtr, PieceColor::WHITE));
-				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("white_bishop"));
+				arrayOfSquares[i][j]->placePiece(new Bishop(gamePtr, PieceColor::WHITE));
+				arrayOfSquares[i][j]->getPiecePtr()->setTexture(&textures.at("white_bishop"));
 				break;
 
 			case 'B':
-				arrayOfSquares[i - 1][j]->placePiece(new Bishop(gamePtr, PieceColor::BLACK));
-				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("black_bishop"));
+				arrayOfSquares[i][j]->placePiece(new Bishop(gamePtr, PieceColor::BLACK));
+				arrayOfSquares[i][j]->getPiecePtr()->setTexture(&textures.at("black_bishop"));
 				break;
 
 			case 'q':
-				arrayOfSquares[i - 1][j]->placePiece(new Queen(gamePtr, PieceColor::WHITE));
-				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("white_queen"));
+				arrayOfSquares[i][j]->placePiece(new Queen(gamePtr, PieceColor::WHITE));
+				arrayOfSquares[i][j]->getPiecePtr()->setTexture(&textures.at("white_queen"));
 				break;
 
 			case 'Q':
-				arrayOfSquares[i - 1][j]->placePiece(new Queen(gamePtr, PieceColor::BLACK));
-				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("black_queen"));
+				arrayOfSquares[i][j]->placePiece(new Queen(gamePtr, PieceColor::BLACK));
+				arrayOfSquares[i][j]->getPiecePtr()->setTexture(&textures.at("black_queen"));
 				break;
 
 			case 'k':
-				arrayOfSquares[i - 1][j]->placePiece(new King(gamePtr, PieceColor::WHITE));
-				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("white_king"));
+				arrayOfSquares[i][j]->placePiece(new King(gamePtr, PieceColor::WHITE));
+				arrayOfSquares[i][j]->getPiecePtr()->setTexture(&textures.at("white_king"));
 				break;
 
 			case 'K':
-				arrayOfSquares[i - 1][j]->placePiece(new King(gamePtr, PieceColor::BLACK));
-				arrayOfSquares[i - 1][j]->getPiecePtr()->setTexture(&textures.at("black_king"));
+				arrayOfSquares[i][j]->placePiece(new King(gamePtr, PieceColor::BLACK));
+				arrayOfSquares[i][j]->getPiecePtr()->setTexture(&textures.at("black_king"));
 				break;
 			}
 
 		}
-		
+		std::cout << "\n";
 	}
 
 

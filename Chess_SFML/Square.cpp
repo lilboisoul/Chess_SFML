@@ -139,6 +139,7 @@ void Square::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 inline void Square::update()
 {
+	//if (piecePtr != nullptr) this->squareGameObject.setFillColor(sf::Color::Magenta);
 	//std::cout<< squareGameObject.getGlobalBounds().top << std::endl;
 	if (squareGameObject.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*gamePtr->window))))
 	{

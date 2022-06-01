@@ -9,13 +9,17 @@ bool isInBounds(int x, int y)
 bool isEmpty(Board& board, int x, int y)
 {
 	if (isInBounds(x, y))
-	if (board.arrayOfSquares[x-1][y-1]->getPiecePtr() == nullptr) return true;
+	{
+		//board.arrayOfSquares[x - 1][y - 1]->squareGameObject.setFillColor(sf::Color::Black);
+		if (board.arrayOfSquares[x - 1][y - 1]->getPiecePtr() == nullptr) return true;
+	}
 	return false;
 }
 bool isSameColor(Board& board, int x1, int y1, int x2, int y2)
 {	
-	if (isInBounds(x2, y2) && isEmpty(board, x2, y2) == false) 
-		if (board.arrayOfSquares[x1 - 1][y1 - 1]->getPiecePtr()->getPieceColor() == board.arrayOfSquares[x2 - 1][y2 - 1]->getPiecePtr()->getPieceColor()) return true;
+	if (isInBounds(x2, y2))
+		if(!isEmpty(board, x2, y2))
+			if (board.arrayOfSquares[x1 - 1][y1 - 1]->getPiecePtr()->getPieceColor() == board.arrayOfSquares[x2 - 1][y2 - 1]->getPiecePtr()->getPieceColor()) return true;
 	
 	return false;
 }
@@ -127,8 +131,8 @@ void Pawn::setHasMoved()
 
 std::vector<std::pair<int, int>> Pawn::getPossibleMoves()
 {
-	int y = getBoardPos().second;
 	int x = getBoardPos().first - 96;
+	int y = getBoardPos().second;
 	int one;
 	Board* board = this->gamePtr->getBoardPtr();
 	pieceColor == PieceColor::WHITE ? one = 1 : one = -1;
@@ -140,17 +144,21 @@ std::vector<std::pair<int, int>> Pawn::getPossibleMoves()
 				possibleMoves.push_back({x , y + one * 2});
 				possibleMoves.push_back({x , y + one });
 	}
-	else if (hasMoved == true && isEmpty(*board, x, y + one))
-	{
-		possibleMoves.push_back({ x , y + one });
-	}
-	//sprawdzanie na kolumnach 'a' i 'h' wywala poza zakres
-	if (isInBounds(x - 1, y + one) && isEmpty(*board, x - 1, y + one) && isSameColor(*board, x, y, x - 1, y + one)){
-		possibleMoves.push_back({ x - 1, y + one });
-	}
-	if (isInBounds(x - 1, y + one) && isEmpty(*board, x + 1, y + one) && isSameColor(*board, x, y, x + 1, y + one)) {
-		possibleMoves.push_back({ x + 1, y + one });
-	}
+	if (hasMoved == true)
+		if(isEmpty(*board, x, y + one))
+		{
+			possibleMoves.push_back({ x , y + one });
+		}
+	if (isInBounds(x - 1, y + one))
+		if(!isEmpty(*board, x - 1, y + one))
+			if(!isSameColor(*board, x, y, x - 1, y + one)){
+				possibleMoves.push_back({ x - 1, y + one });
+				}
+	if (isInBounds(x - 1, y + one))
+		if(!isEmpty(*board, x + 1, y + one))
+			if(!isSameColor(*board, x, y, x + 1, y + one)) {
+				possibleMoves.push_back({ x + 1, y + one });
+			}
 	
 	
 	return possibleMoves;
@@ -190,7 +198,7 @@ std::vector<std::pair<int, int>> Knight::getPossibleMoves()
 	int y = getBoardPos().second;
 	int one;
 	pieceColor == PieceColor::WHITE ? one = 1 : one = -1;
-	std::vector<std::pair<int, int>> possibleMoves = { {x - 1, y + one * 2} };//, { x - 1, y - one * 2 },{x + 1, y + one * 2},{x + 1, y - one * 2}, {x - 2, y + one}, {x - 2, y - one}, {x + 2, y + one}, {x + 2, y - one} };
+	std::vector<std::pair<int, int>> possibleMoves = { {x - 1, y + one * 2}, { x - 1, y - one * 2 },{x + 1, y + one * 2},{x + 1, y - one * 2}, {x - 2, y + one}, {x - 2, y - one}, {x + 2, y + one}, {x + 2, y - one} };
 	std::vector<std::pair<int, int>> legalMoves;
 
 	for (auto& [moveX, moveY] : possibleMoves) {

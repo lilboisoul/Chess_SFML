@@ -37,7 +37,7 @@ public:
 
 	//Public methods
 
-		void initBoard();
+		void initBoardVisualProperties();
 		void initArrayOfSquares();
 		void showLegalMoves(std::vector<std::pair<int,int>> legalMoves);
 		void unShowLegalMoves();
