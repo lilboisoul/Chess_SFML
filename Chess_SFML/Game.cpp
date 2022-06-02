@@ -12,7 +12,6 @@ Game::Game()
 
 Game::Game(std::string FEN_filename)
 {
-	this->currentGameLogic = new GameLogic();
 	this->loadFEN(FEN_filename);
 	this->initVariables();
 	this->initWindow();
@@ -22,6 +21,8 @@ Game::Game(std::string FEN_filename)
 void Game::initVariables()
 {
 	this->window = nullptr;
+	this->currentGameLogic = new GameLogic(this);
+	convertFEN(FEN);
 	this->boardGameObject = new Board(this, FEN);
 	this->defaultTime = 0.2f;
 	this->timer = defaultTime;
@@ -43,7 +44,7 @@ void Game::loadFEN(std::string FEN_filename)
 		std::ifstream plik(path);
 		std::getline(plik, FEN);
 	}
-	convertFEN(FEN);
+	
 
 }
 void Game::convertFEN(std::string FEN)
@@ -90,6 +91,7 @@ void Game::convertFEN(std::string FEN)
 			break;
 		}
 	}
+	this->currentGameLogic->setCastlingRights(FEN_who_can_castle);
 
 	std::cout << "FEN pieces: " << FEN_pieces << "\nwho moves next: " << FEN_who_moves << "\nwho can castle: " << FEN_who_can_castle << "\npossible en passant moves: " << FEN_possible_enpassant_moves << "\n";
 	if (FEN_who_moves == "w") this->currentGameLogic->setCurrentPlayer(PlayerColor::WHITE);
@@ -116,7 +118,7 @@ void Game::waitingForMove(Board& board, GameLogic& logic)
 				{
 					sqr->squareClicked();
 					this->setTimeToMove(true);
-					board.showLegalMoves(sqr->getPiecePtr()->getPossibleMoves());
+					board.showLegalMoves(sqr->getPiecePtr()->getLegalMoves());
 					std::cout << "Clicked the " << sqr->getBoardPos().first << sqr->getBoardPos().second << " square\n";
 					
 
@@ -279,6 +281,7 @@ void Game::render()
 Game::~Game()
 {
 	delete this->window;
+	
 }
 
 const bool Game::running() const

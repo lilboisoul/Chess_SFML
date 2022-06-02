@@ -23,6 +23,27 @@ bool isSameColor(Board& board, int x1, int y1, int x2, int y2)
 	
 	return false;
 }
+std::vector<std::pair<int, int>> checkForAvailableSquares(Board& board, int x, int y, int offsetX, int offsetY)
+{
+	std::vector <std::pair<int, int>> availableSquares;
+	int tempOffsetX = offsetX;
+	int tempOffsetY = offsetY;
+	while (isInBounds(x + offsetX, y + offsetY))
+	{
+		if (isEmpty(board, x + offsetX, y + offsetY)) {
+			availableSquares.push_back({ x + offsetX, y + offsetY });
+			offsetX += tempOffsetX;
+			offsetY += tempOffsetY;
+		}
+		else if (!isSameColor(board, x, y, x + offsetX, y + offsetY))
+		{
+			availableSquares.push_back({ x + offsetX, y + offsetY });
+			break;
+		}
+		else break;
+	}
+	return availableSquares;
+}
 void Piece::initVariables()
 {
 	this->pieceGameObject.setSize({ 100, 100 });
@@ -129,7 +150,7 @@ void Pawn::setHasMoved()
 	else this->hasMoved = false;
 }
 
-std::vector<std::pair<int, int>> Pawn::getPossibleMoves()
+std::vector<std::pair<int, int>> Pawn::getLegalMoves()
 {
 	int x = getBoardPos().first - 96;
 	int y = getBoardPos().second;
@@ -164,14 +185,6 @@ std::vector<std::pair<int, int>> Pawn::getPossibleMoves()
 	return possibleMoves;
 }
 
-std::vector<std::pair<int, int>> Pawn::getLegalMoves(std::vector<std::pair<int, int>>)
-{
-	int x = getBoardPos().first - 96;
-	int y = getBoardPos().second;
-	int one;
-	pieceColor == PieceColor::WHITE ? one = 1 : one = -1;
-	return std::vector<std::pair<int, int>>();
-}
 
 
 
@@ -192,28 +205,25 @@ Knight::~Knight()
 	delete gamePtr;
 }
 
-std::vector<std::pair<int, int>> Knight::getPossibleMoves()
+std::vector<std::pair<int, int>> Knight::getLegalMoves()
 {
 	int x = getBoardPos().first - 96;
 	int y = getBoardPos().second;
 	int one;
+	Board* board = this->gamePtr->getBoardPtr();
 	pieceColor == PieceColor::WHITE ? one = 1 : one = -1;
 	std::vector<std::pair<int, int>> possibleMoves = { {x - 1, y + one * 2}, { x - 1, y - one * 2 },{x + 1, y + one * 2},{x + 1, y - one * 2}, {x - 2, y + one}, {x - 2, y - one}, {x + 2, y + one}, {x + 2, y - one} };
 	std::vector<std::pair<int, int>> legalMoves;
 
 	for (auto& [moveX, moveY] : possibleMoves) {
-		if (moveX > 0 && moveX <= 8 && moveY > 0 && moveY <= 8) {
-			legalMoves.push_back({ moveX, moveY });
-		}
+		if (isInBounds(moveX, moveY))
+			if(isEmpty(*board, moveX, moveY) || !isSameColor(*board, x, y, moveX, moveY))
+				legalMoves.push_back({ moveX, moveY });
 	}
 	return legalMoves;
 }
 
 
-std::vector<std::pair<int, int>> Knight::getLegalMoves(std::vector<std::pair<int, int>>)
-{
-	return std::vector<std::pair<int, int>>();
-}
 
 //---------------------------------------------------------------------
 void Bishop::initVariables()
@@ -232,35 +242,28 @@ Bishop::~Bishop()
 {
 	delete gamePtr;
 }
-std::vector<std::pair<int, int>> Bishop::getPossibleMoves()
+std::vector<std::pair<int, int>> Bishop::getLegalMoves()
 {
 	int x = getBoardPos().first - 96;
 	int y = getBoardPos().second;
-	int one;
-	pieceColor == PieceColor::WHITE ? one = 1 : one = -1;
-
-	std::vector<std::pair<int, int>> possibleMoves;
+	Board* board = this->gamePtr->getBoardPtr();
 	std::vector<std::pair<int, int>> legalMoves;
+	//checks up-right diagonal
+	for (auto i : checkForAvailableSquares(*board, x, y, 1, 1))
+		legalMoves.push_back(i);
+	//checks down-right diagonal
+	for (auto i : checkForAvailableSquares(*board, x, y, 1, -1))
+		legalMoves.push_back(i);
+	//checks down-left diagonal
+	for (auto i : checkForAvailableSquares(*board, x, y, -1, -1))
+		legalMoves.push_back(i);
+	//checks up-left diagonal
+	for (auto i : checkForAvailableSquares(*board, x, y, -1, 1))
+		legalMoves.push_back(i);
 
-	for (int i = 0; i < 8; i++)
-	{
-		possibleMoves.push_back({ x + i, y + one * i });
-		possibleMoves.push_back({ x - i, y + one * i });
-		possibleMoves.push_back({ x + i, y - one * i });
-		possibleMoves.push_back({ x - i, y - one * i });
-	}
-
-	for (auto& [moveX, moveY] : possibleMoves) {
-		if (moveX > 0 && moveX <= 8 && moveY > 0 && moveY <= 8) {
-			legalMoves.push_back({ moveX, moveY });
-		}
-	}
 	return legalMoves;
 }
-std::vector<std::pair<int, int>> Bishop::getLegalMoves(std::vector<std::pair<int, int>>)
-{
-	return std::vector<std::pair<int, int>>();
-}
+
 //---------------------------------------------------------------------
 void Rook::initVariables()
 {
@@ -277,35 +280,28 @@ Rook::~Rook()
 {
 	delete gamePtr;
 }
-std::vector<std::pair<int, int>> Rook::getPossibleMoves()
+std::vector<std::pair<int, int>> Rook::getLegalMoves()
 {
 	int x = getBoardPos().first - 96;
 	int y = getBoardPos().second;
-	int one;
-	pieceColor == PieceColor::WHITE ? one = 1 : one = -1;
-
-	std::vector<std::pair<int, int>> possibleMoves;
+	Board* board = this->gamePtr->getBoardPtr();
 	std::vector<std::pair<int, int>> legalMoves;
 
-	for (int i = 0; i < 8; i++)
-	{
-		possibleMoves.push_back({ x, y + one * i });
-		possibleMoves.push_back({ x, y - one * i });
-		possibleMoves.push_back({ x + i, y });
-		possibleMoves.push_back({ x - i, y });
-
-	}
-	for (auto& [moveX, moveY] : possibleMoves) {
-		if (moveX > 0 && moveX <= 8 && moveY > 0 && moveY <= 8) {
-			legalMoves.push_back({ moveX, moveY });
-		}
-	}
+	//checks to the right
+	for (auto i : checkForAvailableSquares(*board, x, y, 1, 0))
+		legalMoves.push_back(i);
+	//checks to the left
+	for (auto i : checkForAvailableSquares(*board, x, y, -1, 0))
+		legalMoves.push_back(i);
+	//checks down
+	for (auto i : checkForAvailableSquares(*board, x, y, 0, -1))
+		legalMoves.push_back(i);
+	//checks up
+	for (auto i : checkForAvailableSquares(*board, x, y, 0, 1))
+		legalMoves.push_back(i);
 	return legalMoves;
 }
-std::vector<std::pair<int, int>> Rook::getLegalMoves(std::vector<std::pair<int, int>>)
-{
-	return std::vector<std::pair<int, int>>();
-}
+
 //---------------------------------------------------------------------
 void Queen::initVariables()
 {
@@ -322,38 +318,41 @@ Queen::~Queen()
 {
 	delete gamePtr;
 }
-std::vector<std::pair<int, int>> Queen::getPossibleMoves()
+std::vector<std::pair<int, int>> Queen::getLegalMoves()
 {
 	int x = getBoardPos().first - 96;
 	int y = getBoardPos().second;
-	int one;
-	pieceColor == PieceColor::WHITE ? one = 1 : one = -1;
-
-	std::vector<std::pair<int, int>> possibleMoves;
+	Board* board = this->gamePtr->getBoardPtr();
 	std::vector<std::pair<int, int>> legalMoves;
 
-	for (int i = 0; i < 8; i++)
-	{
-		possibleMoves.push_back({ x, y + one * i });
-		possibleMoves.push_back({ x, y - one * i });
-		possibleMoves.push_back({ x + i, y });
-		possibleMoves.push_back({ x - i, y });
-		possibleMoves.push_back({ x + i, y + one * i });
-		possibleMoves.push_back({ x - i, y + one * i });
-		possibleMoves.push_back({ x + i, y - one * i });
-		possibleMoves.push_back({ x - i, y - one * i });
-	}
-	for (auto& [moveX, moveY] : possibleMoves) {
-		if (moveX > 0 && moveX <= 8 && moveY > 0 && moveY <= 8) {
-			legalMoves.push_back({ moveX, moveY });
-		}
-	}
+	//checks to the right
+	for (auto i : checkForAvailableSquares(*board, x, y, 1, 0))
+		legalMoves.push_back(i);
+	//checks to the left
+	for (auto i : checkForAvailableSquares(*board, x, y, -1, 0))
+		legalMoves.push_back(i);
+	//checks down
+	for (auto i : checkForAvailableSquares(*board, x, y, 0, -1))
+		legalMoves.push_back(i);
+	//checks up
+	for (auto i : checkForAvailableSquares(*board, x, y, 0, 1))
+		legalMoves.push_back(i);
+	//checks up-right diagonal
+	for (auto i : checkForAvailableSquares(*board, x, y, 1, 1))
+		legalMoves.push_back(i);
+	//checks down-right diagonal
+	for (auto i : checkForAvailableSquares(*board, x, y, 1, -1))
+		legalMoves.push_back(i);
+	//checks down-left diagonal
+	for (auto i : checkForAvailableSquares(*board, x, y, -1, -1))
+		legalMoves.push_back(i);
+	//checks up-left diagonal
+	for (auto i : checkForAvailableSquares(*board, x, y, -1, 1))
+		legalMoves.push_back(i);
+
 	return legalMoves;
 }
-std::vector<std::pair<int, int>> Queen::getLegalMoves(std::vector<std::pair<int, int>>)
-{
-	return std::vector<std::pair<int, int>>();
-}
+
 //---------------------------------------------------------------------
 void King::initVariables()
 {
@@ -371,24 +370,21 @@ King::~King()
 	delete gamePtr;
 }
 
-std::vector<std::pair<int, int>> King::getPossibleMoves()
+std::vector<std::pair<int, int>> King::getLegalMoves()
 {
 	int x = getBoardPos().first - 96;
 	int y = getBoardPos().second;
 	int one;
 	pieceColor == PieceColor::WHITE ? one = 1 : one = -1;
+	Board* board = this->gamePtr->getBoardPtr();
 	std::vector<std::pair<int, int>> possibleMoves { {x + one, y + one}, {x + one, y }, {x + one, y - one}, {x, y + one},
 													 {x, y - one}, {x - one, y + one}, {x - one, y}, {x - one, y - one} };
 	std::vector<std::pair<int, int>> legalMoves;
 	for (auto& [moveX, moveY] : possibleMoves) {
-		if (moveX > 0 && moveX <= 8 && moveY > 0 && moveY <= 8) {
-			legalMoves.push_back({ moveX, moveY });
-		}
+		if (isInBounds(moveX, moveY))
+			if (isEmpty(*board, moveX, moveY) || !isSameColor(*board, x, y, moveX, moveY))
+				legalMoves.push_back({ moveX, moveY });
 	}
 	return legalMoves;
 }
 
-std::vector<std::pair<int, int>> King::getLegalMoves(std::vector<std::pair<int, int>>)
-{
-	return std::vector<std::pair<int, int>>();
-}

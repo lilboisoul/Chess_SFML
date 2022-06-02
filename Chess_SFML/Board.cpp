@@ -40,7 +40,7 @@ void Board::showLegalMoves(std::vector<std::pair<int,int>> legalMoves)
 				
 				if (sqr->getBoardPosAsInt() == move) {
 					sqr->squareGameObject.setFillColor(sf::Color::Red);
-					std::cout << sqr->getBoardPos().first << sqr->getBoardPos().second <<  " ";
+					//std::cout << sqr->getBoardPos().first << sqr->getBoardPos().second <<  " ";
 
 				}
 			}
@@ -181,14 +181,14 @@ void Board::convertFENIntoPieces(std::string FEN)
 		}
 		if (row == 0 && column == 8) break; //checks for the end of piece placement section of the FEN code
 	}
-	for (int i = 0; i < 8; i++)
+	/*for (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < 8; j++)
 		{
 			std::cout << fenPosition[i][j] << " ";
 		}
 		std::cout << "\n";
-	}
+	}*/
 	//if FEN file doesn't exist, load the default position
 	
 	//displays the board in the console
@@ -202,12 +202,12 @@ void Board::convertFENIntoPieces(std::string FEN)
 	}*/
 
 	//converts array into Piece pointers
-	std::cout << "\n";
+	//std::cout << "\n";
 	for (int j = 0; j < 8; j++)
 	{
 		for (int i = 0; i < 8; i++)
 		{
-			std::cout << fenPosition[7 - j][i] << " ";
+			//std::cout << fenPosition[7 - j][i] << " ";
 			switch (fenPosition[7 - j][i])
 			{
 			case 'p':

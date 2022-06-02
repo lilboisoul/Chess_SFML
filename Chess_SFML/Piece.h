@@ -50,8 +50,7 @@ class Piece : public sf::Drawable
 		void writeName();
 		std::string getName();
 		PieceColor getPieceColor();
-		virtual std::vector<std::pair<int, int>> getPossibleMoves() = 0;
-		virtual std::vector<std::pair<int, int>> getLegalMoves(std::vector<std::pair<int, int>>) = 0;
+		virtual std::vector<std::pair<int, int>> getLegalMoves() = 0;
 		//draws the piece on the screen
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
@@ -69,8 +68,8 @@ public:
 	~Pawn();
 	void setBoardPos(std::pair<char, int> _boardPos);
 	void setHasMoved();
-	std::vector<std::pair<int, int>> getPossibleMoves();
-	std::vector<std::pair<int, int>> getLegalMoves(std::vector<std::pair<int, int>>);
+	std::vector<std::pair<int, int>> getLegalMoves();
+	
 };
 
 class Knight : public Piece
@@ -85,8 +84,8 @@ public:
 	~Knight();
 
 
-	std::vector<std::pair<int, int>> getPossibleMoves();
-	std::vector<std::pair<int, int>> getLegalMoves(std::vector<std::pair<int, int>>);
+	std::vector<std::pair<int, int>> getLegalMoves();
+	
 };
 
 class Bishop : public Piece
@@ -101,8 +100,8 @@ public:
 	~Bishop();
 
 
-	std::vector<std::pair<int, int>> getPossibleMoves();
-	std::vector<std::pair<int, int>> getLegalMoves(std::vector<std::pair<int, int>>);
+	std::vector<std::pair<int, int>> getLegalMoves();
+	
 };
 
 class Rook : public Piece
@@ -117,8 +116,8 @@ public:
 	~Rook();
 
 
-	std::vector<std::pair<int, int>> getPossibleMoves();
-	std::vector<std::pair<int, int>> getLegalMoves(std::vector<std::pair<int, int>>);
+	std::vector<std::pair<int, int>> getLegalMoves();
+	
 };
 
 class Queen : public Piece
@@ -133,8 +132,7 @@ public:
 	~Queen();
 
 
-	std::vector<std::pair<int, int>> getPossibleMoves();
-	std::vector<std::pair<int, int>> getLegalMoves(std::vector<std::pair<int, int>>);
+	std::vector<std::pair<int, int>> getLegalMoves();
 };
 
 class King : public Piece
@@ -149,6 +147,6 @@ public:
 	~King();
 
 
-	std::vector<std::pair<int, int>> getPossibleMoves();
-	std::vector<std::pair<int, int>> getLegalMoves(std::vector<std::pair<int, int>>);
+	std::vector<std::pair<int, int>> getLegalMoves();
+
 };
