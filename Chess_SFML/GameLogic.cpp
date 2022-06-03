@@ -1,6 +1,21 @@
 #include "GameLogic.h"
 #include "Game.h"
-
+bool isCheck()
+{
+	return true;
+}
+bool isCheckMate()
+{
+	return true;
+}
+bool isStalemate()
+{
+	return true;
+}
+bool isDraw()
+{
+	return true;
+}
 GameLogic::GameLogic(Game* game): gamePtr(game)
 {
     initVariables();
@@ -15,6 +30,7 @@ GameLogic::~GameLogic()
 void GameLogic::initVariables()
 {
     this->currentPlayer = PlayerColor::WHITE;
+	this->currentGameState = GameState::NORMAL;
 	this->canWhiteKingCastleShort = false;
 	this->canWhiteKingCastleLong = false;
 	this->canBlackKingCastleShort = false;
@@ -48,9 +64,16 @@ void GameLogic::setCastlingRights(std::string FEN_who_can_castle)
 	}
 }
 
-void GameLogic::checkCurrentGameState(Board& board)
+GameState GameLogic::checkBoardGameState(Board& board)
 {
-	std::cout << "xd";
+	//is there a check on the board
+	if (isCheck()) {
+		if (isCheckMate()) return GameState::CHECKMATE;
+		return GameState::CHECK;
+	}
+	else if (isStalemate()) return GameState::STALEMATE;
+	else if (isDraw()) return GameState::DRAW;
+	return GameState::NORMAL;
 }
 
 void GameLogic::setGameState(GameState _gamestate)
@@ -61,6 +84,53 @@ void GameLogic::setGameState(GameState _gamestate)
 GameState GameLogic::getGameState()
 {
 	return this->currentGameState;
+}
+
+std::vector<std::pair<int, int>> GameLogic::getCurrentPlayerAllLegalMoves()
+{
+	
+	std::vector<std::pair<int, int>> pieceLegalMoves;
+	std::vector<std::pair<int, int>> allLegalMoves;
+	Piece* piece;
+	switch (getCurrentPlayer())
+	{
+		case PlayerColor::WHITE:
+			for (int i = 0; i < 8; i++)
+			{
+				for (int j = 0; j < 8; j++)
+				{
+					pieceLegalMoves.resize(0);
+					if (gamePtr->getBoardPtr()->arrayOfSquares[i][j]->getPiecePtr() != nullptr) {
+						piece = gamePtr->getBoardPtr()->arrayOfSquares[i][j]->getPiecePtr();
+						if (piece->getPieceColor() == PieceColor::WHITE) {
+							pieceLegalMoves = gamePtr->getBoardPtr()->arrayOfSquares[i][j]->getPiecePtr()->getLegalMoves();
+						}
+						for (auto i : pieceLegalMoves) allLegalMoves.push_back(i);
+					}
+				}
+			}
+			break;
+		case PlayerColor::BLACK:
+			for (int i = 0; i < 8; i++)
+			{
+				for (int j = 0; j < 8; j++)
+				{
+					pieceLegalMoves.resize(0);
+					if (gamePtr->getBoardPtr()->arrayOfSquares[i][j]->getPiecePtr() != nullptr) {
+						piece = gamePtr->getBoardPtr()->arrayOfSquares[i][j]->getPiecePtr();
+						if (piece->getPieceColor() == PieceColor::BLACK) {
+							pieceLegalMoves = gamePtr->getBoardPtr()->arrayOfSquares[i][j]->getPiecePtr()->getLegalMoves();
+						}
+						for (auto i : pieceLegalMoves) allLegalMoves.push_back(i);
+					}
+
+				}
+			}
+			break;
+
+	}
+
+	return allLegalMoves;
 }
 
 bool GameLogic::checkIfMoveIsLegal(Square& square_from, Square& square_to)

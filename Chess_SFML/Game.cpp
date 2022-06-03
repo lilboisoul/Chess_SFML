@@ -262,12 +262,11 @@ void Game::update()
 	//std::cout << timer << "\n";
 	this->pollEvents();
 	this->updateMousePositions();
-
 	//checking for the square movement
 	if (this->timeToMove == false) this->waitingForMove(*this->boardGameObject, *this->currentGameLogic);
 	else						   this->move(*this->boardGameObject, *this->currentGameLogic);
-
 	boardGameObject->update();
+	//this->currentGameLogic->checkCurrentGameState(*(this->boardGameObject));
 }
 
 void Game::render()
