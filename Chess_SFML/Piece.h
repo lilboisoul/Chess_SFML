@@ -47,6 +47,7 @@ class Piece : public sf::Drawable
 		virtual void setBoardPos(std::pair<char, int> _boardPos);
 		std::pair<char, int> getBoardPos();
 		std::string getBoardPosAsString();
+		std::pair<int, int> getBoardPosAsInt();
 		void writeName();
 		std::string getName();
 		PieceColor getPieceColor();

@@ -23,6 +23,16 @@ bool isSameColor(Board& board, int x1, int y1, int x2, int y2)
 	
 	return false;
 }
+bool isCheck(GameLogic& logic, Board& board, int x1, int y1, int x2, int y2)
+{
+	board.arrayOfSquares[x1-1][y1-1]->move(board.arrayOfSquares[x2-1][y2-1]);
+	if (logic.isCheck(board) == true) {
+		board.arrayOfSquares[x2 - 1][y2 - 1]->move(board.arrayOfSquares[x1 - 1][y1 - 1]);
+		return true;
+	}
+	board.arrayOfSquares[x2 - 1][y2 - 1]->move(board.arrayOfSquares[x1 - 1][y1 - 1]);
+	return false;
+}
 std::vector<std::pair<int, int>> checkForAvailableSquares(Board& board, int x, int y, int offsetX, int offsetY)
 {
 	std::vector <std::pair<int, int>> availableSquares;
@@ -97,6 +107,10 @@ std::string Piece::getBoardPosAsString()
 	temp += boardPos.second+48;
 	return temp;
 }
+std::pair<int, int> Piece::getBoardPosAsInt()
+{
+	return std::make_pair(boardPos.first - 96, boardPos.second);
+}
 void Piece::writeName()
 {
 	std::cout << name;
@@ -156,30 +170,35 @@ std::vector<std::pair<int, int>> Pawn::getLegalMoves()
 	int y = getBoardPos().second;
 	int one;
 	Board* board = this->gamePtr->getBoardPtr();
+	GameLogic* logic = this->gamePtr->getLogicPtr();
 	pieceColor == PieceColor::WHITE ? one = 1 : one = -1;
 	std::vector<std::pair<int, int>> possibleMoves;
 	std::vector<std::pair<int, int>> legalMoves;
 	if (hasMoved == false)
-		if(isEmpty(*board, x, y + one))
-			if(isEmpty(*board, x, y + one * 2)) {
+		if(isEmpty(*board, x, y + one))// && !isCheck(*logic, *board, x, y, x, y + one))
+			if(isEmpty(*board, x, y + one * 2)){// && !isCheck(*logic, *board, x, y, x, y + one*2)) {
 				possibleMoves.push_back({x , y + one * 2});
 				possibleMoves.push_back({x , y + one });
 	}
 	if (hasMoved == true)
-		if(isEmpty(*board, x, y + one))
+		if(isEmpty(*board, x, y + one))// && !isCheck(*logic, *board, x, y, x, y + one))
 		{
 			possibleMoves.push_back({ x , y + one });
 		}
 	if (isInBounds(x - 1, y + one))
 		if(!isEmpty(*board, x - 1, y + one))
-			if(!isSameColor(*board, x, y, x - 1, y + one)){
+			if(!isSameColor(*board, x, y, x - 1, y + one))
+				//if(!isCheck(*logic, *board, x, y, x - 1, y + one))
+				{ 
 				possibleMoves.push_back({ x - 1, y + one });
 				}
-	if (isInBounds(x - 1, y + one))
-		if(!isEmpty(*board, x + 1, y + one))
-			if(!isSameColor(*board, x, y, x + 1, y + one)) {
-				possibleMoves.push_back({ x + 1, y + one });
-			}
+	if (isInBounds(x + 1, y + one))
+		if (!isEmpty(*board, x + 1, y + one))
+			if (!isSameColor(*board, x, y, x + 1, y + one))
+				//if (!isCheck(*logic, *board, x, y, x + 1, y + one))
+				{
+					possibleMoves.push_back({ x + 1, y + one });
+				}
 	
 	
 	return possibleMoves;

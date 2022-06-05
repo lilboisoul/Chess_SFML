@@ -28,9 +28,10 @@ private:
 	sf::Vector2i      mousePosInWindow;
 
 	//Game logic management
-	GameLogic* currentGameLogic;
+	GameLogic*	      currentGameLogic;
 	bool			  timeToMove;
 	std::string		  FEN;
+
 	//Game objects
 	Board*			  boardGameObject;
 	
@@ -61,6 +62,7 @@ public:
 	~Game();
 	//Getters / Setters
 	Board* getBoardPtr();
+	GameLogic* getLogicPtr();
 	//Methods
 	void pollEvents();
 	void updateMousePositions();

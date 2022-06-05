@@ -48,6 +48,7 @@ void Board::showLegalMoves(std::vector<std::pair<int,int>> legalMoves)
 	}
 	std::cout << "\n";
 }
+
 void Board::unShowLegalMoves()
 {
 

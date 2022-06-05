@@ -34,7 +34,8 @@ public:
 	PlayerColor getCurrentPlayer();
 	void setCurrentPlayer(PlayerColor _color);
 	void swapCurrentPlayer();
-	
+	void setCurrentPlayerFromFEN(std::string FEN);
+
 	//castling
 	void setCastlingRights(std::string FEN_who_can_castle);
 
@@ -45,8 +46,12 @@ public:
 
 	std::vector<std::pair<int, int>> getCurrentPlayerAllLegalMoves();
 	bool checkIfMoveIsLegal(Square& square_from, Square& square_to);
-	
-	void simulateNextMove(Board board, Square& square_from, Square& square_to);
+	bool isCheck(Board& board);
+	bool isCheckMate(Board& board);
+	bool isStalemate();
+	bool isDraw();
+
+	std::pair<int, int> getKingPos(Board& board);
 
 };
 

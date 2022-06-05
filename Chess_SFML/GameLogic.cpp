@@ -1,20 +1,61 @@
 #include "GameLogic.h"
 #include "Game.h"
-bool isCheck()
+bool GameLogic::isCheck(Board& board)
 {
+	swapCurrentPlayer();
+	std::pair<int, int> enemyKingBoardPosition = getKingPos(board);
+	swapCurrentPlayer();
+	std::vector<std::pair<int, int>> allLegalMoves = getCurrentPlayerAllLegalMoves();
+	for (auto [x,y] : allLegalMoves)
+	{
+		if (x == enemyKingBoardPosition.first && y == enemyKingBoardPosition.second)
+		return true;
+	}
+	
+	return false;
+}
+bool GameLogic::isCheckMate(Board& board)
+{
+	swapCurrentPlayer();
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			if ((board.arrayOfSquares[i][j]->getPiecePtr()->getPieceColor() == PieceColor::WHITE && getCurrentPlayer() == PlayerColor::WHITE) ||
+				(board.arrayOfSquares[i][j]->getPiecePtr()->getPieceColor() == PieceColor::BLACK && getCurrentPlayer() == PlayerColor::BLACK))
+			{
+				Piece* currentPiece = board.arrayOfSquares[i][j]->getPiecePtr();
+				std::vector<std::pair<int, int>> moves = currentPiece->getLegalMoves();
+				for (auto [x, y] : moves)
+				{
+					board.arrayOfSquares[i][j]->move(board.arrayOfSquares[x][y]);
+					if (!isCheck(board)) {
+						board.arrayOfSquares[x][y]->move(board.arrayOfSquares[i][j]);
+						swapCurrentPlayer();
+						return false;
+					}
+					board.arrayOfSquares[x][y]->move(board.arrayOfSquares[i][j]);
+				}
+			}
+		}
+	}
+	swapCurrentPlayer();
 	return true;
 }
-bool isCheckMate()
+bool GameLogic::isStalemate()
 {
-	return true;
+	swapCurrentPlayer();
+	if (getCurrentPlayerAllLegalMoves().size() == 0) {
+		swapCurrentPlayer();
+		return true;
+	}
+	swapCurrentPlayer();
+	return false;
 }
-bool isStalemate()
+bool GameLogic::isDraw()
 {
-	return true;
-}
-bool isDraw()
-{
-	return true;
+	//to-do
+	return false;
 }
 GameLogic::GameLogic(Game* game): gamePtr(game)
 {
@@ -24,7 +65,7 @@ GameLogic::GameLogic(Game* game): gamePtr(game)
 
 GameLogic::~GameLogic()
 {
-
+	
 }
 
 void GameLogic::initVariables()
@@ -53,6 +94,13 @@ void GameLogic::swapCurrentPlayer()
     else setCurrentPlayer(PlayerColor::WHITE);
 }
 
+void GameLogic::setCurrentPlayerFromFEN(std::string FEN)
+{
+
+	if (FEN == "w") this->setCurrentPlayer(PlayerColor::WHITE);
+	else this->setCurrentPlayer(PlayerColor::BLACK);
+}
+
 void GameLogic::setCastlingRights(std::string FEN_who_can_castle)
 {
 	for (int i = 0; i < FEN_who_can_castle.length(); i++)
@@ -67,12 +115,23 @@ void GameLogic::setCastlingRights(std::string FEN_who_can_castle)
 GameState GameLogic::checkBoardGameState(Board& board)
 {
 	//is there a check on the board
-	if (isCheck()) {
-		if (isCheckMate()) return GameState::CHECKMATE;
+	if (isCheck(board)) {
+		/*if (isCheckMate(board)) {
+			std::cout << "checkmate\n"; return GameState::CHECKMATE;
+		}*/
+		std::cout << "check\n";
 		return GameState::CHECK;
 	}
-	else if (isStalemate()) return GameState::STALEMATE;
-	else if (isDraw()) return GameState::DRAW;
+	else if (isStalemate()) {
+		std::cout << "stalemate\n";
+		return GameState::STALEMATE;
+	}
+	else if (isDraw())
+	{
+		std::cout << "draw\n";
+		return GameState::DRAW;
+	}
+	std::cout << "normal\n";
 	return GameState::NORMAL;
 }
 
@@ -147,4 +206,24 @@ bool GameLogic::checkIfMoveIsLegal(Square& square_from, Square& square_to)
 		}
 	}
 	return isMoveLegal;
+}
+
+
+std::pair<int,int> GameLogic::getKingPos(Board& board)
+{
+	std::pair<int, int> boardPos = { 0, 0 };
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++)
+		{
+			Square* sqr = board.arrayOfSquares[i][j];
+			if (sqr->getPiecePtr() != nullptr) {
+				if ((sqr->getPiecePtr()->getName() == "White king" && getCurrentPlayer() == PlayerColor::WHITE)
+					|| (sqr->getPiecePtr()->getName() == "Black king" && getCurrentPlayer() == PlayerColor::BLACK)) {
+					boardPos = sqr->getPiecePtr()->getBoardPosAsInt();
+					return boardPos;
+				}
+			}
+		}
+	}
+	return boardPos;
 }
