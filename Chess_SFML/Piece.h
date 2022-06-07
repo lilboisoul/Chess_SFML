@@ -7,53 +7,52 @@
 
 /*
 	A class representing a chess piece.
-
-*/ 
+*/
 class Game;
-enum class PieceColor{
+enum class PieceColor {
 	WHITE,
 	BLACK
 };
 
 class Piece : public sf::Drawable
 {
-	private:
+private:
 	//Private variables
-	
+
 	//Private methods
 
-		void initVariables();
+	void initVariables();
 
-	public:
-		Game* gamePtr;
-		sf::RectangleShape pieceGameObject;
-		std::string name;
-		std::pair<char, int> boardPos;
-		int posX, posY; //position on the screen [pixels]
-		PieceColor pieceColor;
+public:
+	Game* gamePtr;
+	sf::RectangleShape pieceGameObject;
+	std::string name;
+	std::pair<char, int> boardPos;
+	int posX, posY; //position on the screen [pixels]
+	PieceColor pieceColor;
 	//Constructors / Destructors
-		
-		Piece(Game* _game, PieceColor _color);
-		~Piece();
+
+	Piece(Game* _game, PieceColor _color);
+	~Piece();
 
 	//Methods
 		//returns the position of the piece as a pair: <posX, posY>
-		std::pair<int, int> getPosition();
+	std::pair<int, int> getPosition();
 
-		//sets the position of a piece
-		void setPosition(int new_posX, int new_posY);
-		void setTexture(sf::Texture* texture);
-		void setBoardPos(std::string _boardPos);
-		virtual void setBoardPos(std::pair<char, int> _boardPos);
-		std::pair<char, int> getBoardPos();
-		std::string getBoardPosAsString();
-		std::pair<int, int> getBoardPosAsInt();
-		void writeName();
-		std::string getName();
-		PieceColor getPieceColor();
-		virtual std::vector<std::pair<int, int>> getLegalMoves() = 0;
-		//draws the piece on the screen
-		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+	//sets the position of a piece
+	void setPosition(int new_posX, int new_posY);
+	void setTexture(sf::Texture* texture);
+	void setBoardPos(std::string _boardPos);
+	virtual void setBoardPos(std::pair<char, int> _boardPos);
+	std::pair<char, int> getBoardPos();
+	std::string getBoardPosAsString();
+	std::pair<int, int> getBoardPosAsInt();
+	void writeName();
+	std::string getName();
+	PieceColor getPieceColor();
+	virtual std::vector<std::pair<int, int>> getLegalMoves() = 0;
+	//draws the piece on the screen
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 };
 
@@ -70,7 +69,7 @@ public:
 	void setBoardPos(std::pair<char, int> _boardPos);
 	void setHasMoved();
 	std::vector<std::pair<int, int>> getLegalMoves();
-	
+
 };
 
 class Knight : public Piece
@@ -86,7 +85,7 @@ public:
 
 
 	std::vector<std::pair<int, int>> getLegalMoves();
-	
+
 };
 
 class Bishop : public Piece
@@ -102,7 +101,7 @@ public:
 
 
 	std::vector<std::pair<int, int>> getLegalMoves();
-	
+
 };
 
 class Rook : public Piece
@@ -118,7 +117,7 @@ public:
 
 
 	std::vector<std::pair<int, int>> getLegalMoves();
-	
+
 };
 
 class Queen : public Piece

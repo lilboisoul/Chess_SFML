@@ -45,7 +45,7 @@ void Game::initWindow()
 {
 	this->videomode.width = 1024; //width of the game window
 	this->videomode.height = 900; //height of the game window
-	this->window = new sf::RenderWindow (this->videomode, "Chess", sf::Style::Titlebar | sf::Style::Close);
+	this->window = new sf::RenderWindow(this->videomode, "Chess", sf::Style::Titlebar | sf::Style::Close);
 	this->window->setFramerateLimit(60);
 }
 
@@ -61,9 +61,9 @@ void Game::convertFEN(std::string FEN)
 {
 	char tempChar = 'x';
 	int tempIndex = 0;
-	std::string FEN_pieces="";
-	std::string FEN_who_moves="";
-	std::string FEN_who_can_castle="";
+	std::string FEN_pieces = "";
+	std::string FEN_who_moves = "";
+	std::string FEN_who_can_castle = "";
 	std::string FEN_possible_enpassant_moves = "";
 
 	//extracting piece-portion of FEN
@@ -71,7 +71,7 @@ void Game::convertFEN(std::string FEN)
 	{
 		if (FEN[i] != ' ') FEN_pieces += FEN[i];
 		else {
-			tempIndex = i+1;
+			tempIndex = i + 1;
 			break;
 		}
 	}
@@ -97,7 +97,7 @@ void Game::convertFEN(std::string FEN)
 		}
 		else {
 			FEN_possible_enpassant_moves += FEN[i];
-			FEN_possible_enpassant_moves += FEN[i+1];
+			FEN_possible_enpassant_moves += FEN[i + 1];
 			tempIndex += 3;
 			break;
 		}
@@ -120,21 +120,21 @@ void Game::waitingForMove(Board& board, GameLogic& logic)
 			{
 				Square* sqr = board.arrayOfSquares[i][j];
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && sqr->getPiecePtr() != nullptr &&
-					doesPlayerColorMatchPieceColor(logic, sqr) && 
+					doesPlayerColorMatchPieceColor(logic, sqr) &&
 					isMouseOnASquare(mousePosInWindow, sqr))
 				{
 					sqr->squareClicked();
 					this->setTimeToMove(true);
 					board.showLegalMoves(sqr->getPiecePtr()->getLegalMoves());
 					std::cout << "Clicked the " << sqr->getBoardPos().first << sqr->getBoardPos().second << " square\n";
-					
+
 					this->timer = defaultTime;
 					break;
 				}
 			}
 		}
 	}
-	
+
 }
 
 void Game::move(Board& board, GameLogic& logic)
@@ -158,14 +158,14 @@ void Game::move(Board& board, GameLogic& logic)
 			for (int j = 0; j < 8; j++)
 			{
 				Square* sqr_to = board.arrayOfSquares[i][j];
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) 
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)
 					&& sqr_from->getBoardPos() != sqr_to->getBoardPos()
 					&& logic.checkIfMoveIsLegal(*sqr_from, *sqr_to) == true
 					&& isMouseOnASquare(mousePosInWindow, sqr_to))
 				{
 					if (sqr_to->getPiecePtr() != nullptr) {
 						std::cout << sqr_from->getPiecePtr()->getName() << " from " << sqr_from->getBoardPos().first << sqr_from->getBoardPos().second
-							  << " captured a " << sqr_to->getPiecePtr()->getName() << " on " << sqr_to->getBoardPos().first << sqr_to->getBoardPos().second << "\n";
+							<< " captured a " << sqr_to->getPiecePtr()->getName() << " on " << sqr_to->getBoardPos().first << sqr_to->getBoardPos().second << "\n";
 					}
 					else {
 						std::cout << sqr_from->getPiecePtr()->getName() << " moved from " << sqr_from->getBoardPos().first << sqr_from->getBoardPos().second
@@ -175,17 +175,18 @@ void Game::move(Board& board, GameLogic& logic)
 					sqr_from->squareUnclicked();
 					sqr_to->squareUnclicked();
 					board.unShowLegalMoves();
+					logic.setGameState(logic.checkBoardGameState(board));
 					logic.swapCurrentPlayer();
 					this->setTimeToMove(false);
 					this->timer = defaultTime;
 					break;
 				}
 				//unclicking the square
-				else if (sf::Mouse::isButtonPressed(sf::Mouse::Left) 
+				else if (sf::Mouse::isButtonPressed(sf::Mouse::Left)
 					&& sqr_from->getBoardPos() == sqr_to->getBoardPos()
 					&& isMouseOnASquare(mousePosInWindow, sqr_to))
 				{
-		
+
 					sqr_from->squareUnclicked();
 					this->setTimeToMove(false);
 					board.unShowLegalMoves();
@@ -196,8 +197,8 @@ void Game::move(Board& board, GameLogic& logic)
 			}
 		}
 	}
-	
-	
+
+
 }
 
 void Game::calculateDeltaTime()
@@ -220,7 +221,7 @@ void Game::gameLoop()
 	while (this->running())
 	{
 		this->render();
-		
+
 		this->update();
 	}
 }
@@ -232,11 +233,11 @@ void Game::pollEvents()
 	{
 		switch (this->sfevent.type)
 		{
-		//closes the app when the user clicks the "X" button in the upper right corner
+			//closes the app when the user clicks the "X" button in the upper right corner
 		case sf::Event::Closed:
 			this->window->close();
 			break;
-		//closes the app when 'Escape' is pressed
+			//closes the app when 'Escape' is pressed
 		case sf::Event::KeyPressed:
 			if (this->sfevent.key.code == sf::Keyboard::Escape) this->window->close();
 			break;
@@ -275,7 +276,7 @@ void Game::update()
 
 void Game::render()
 {
-	this->window->clear(sf::Color(255,255, 255, 255));
+	this->window->clear(sf::Color(255, 255, 255, 255));
 	this->window->draw(*this->boardGameObject);
 	this->window->display();
 }
@@ -284,7 +285,7 @@ void Game::render()
 Game::~Game()
 {
 	delete this->window;
-	
+
 }
 
 const bool Game::running() const

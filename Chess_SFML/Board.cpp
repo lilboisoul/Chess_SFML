@@ -1,7 +1,7 @@
 #include "Board.h"
 #include "Game.h"
 
-Board::Board(Game* _game, std::string FEN_filename): gamePtr(_game)
+Board::Board(Game* _game, std::string FEN_filename) : gamePtr(_game)
 {
 	this->initTextures();
 	this->initBoardVisualProperties();
@@ -30,14 +30,14 @@ void Board::initBoardVisualProperties()
 }
 
 
-void Board::showLegalMoves(std::vector<std::pair<int,int>> legalMoves)
+void Board::showLegalMoves(std::vector<std::pair<int, int>> legalMoves)
 {
 	for (auto move : legalMoves) {
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++)
 			{
 				Square* sqr = this->arrayOfSquares[i][j];
-				
+
 				if (sqr->getBoardPosAsInt() == move) {
 					sqr->squareGameObject.setFillColor(sf::Color::Red);
 					//std::cout << sqr->getBoardPos().first << sqr->getBoardPos().second <<  " ";
@@ -56,7 +56,7 @@ void Board::unShowLegalMoves()
 		for (int j = 0; j < 8; j++)
 		{
 			Square* sqr = this->arrayOfSquares[i][j];
-			if (sqr->squareGameObject.getFillColor() == sf::Color::Red){
+			if (sqr->squareGameObject.getFillColor() == sf::Color::Red) {
 				if (sqr->getSquareColor() == SquareColor::WHITE) sqr->setSquareColorToWhite();
 				else sqr->setSquareColorToBlack();
 			}
@@ -68,7 +68,7 @@ void Board::initArrayOfSquares()
 {
 	//sets the position and the color of squares in the array
 	int temporaryNumber = 1;
-	
+
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++)
 		{
@@ -83,10 +83,10 @@ void Board::initArrayOfSquares()
 			}
 			temporaryNumber++;
 
-			
+
 			//sets the position of squares on the board in pixels
-			this->arrayOfSquares[i][j]->setPosition(boardGameObject.getPosition().x + 100 * i, boardGameObject.getPosition().y + 100 *(7-j));
-			this->arrayOfSquares[i][j]->setBoardPos(i, j+1);
+			this->arrayOfSquares[i][j]->setPosition(boardGameObject.getPosition().x + 100 * i, boardGameObject.getPosition().y + 100 * (7 - j));
+			this->arrayOfSquares[i][j]->setBoardPos(i, j + 1);
 			//std::cout << "" << arrayOfSquares[i][j].getBoardPos().first << arrayOfSquares[i][j].getBoardPos().second << " ";
 			//std::cout << "{" << array_of_squares[i][j].getPosition().first << " " << array_of_squares[i][j].getPosition().second << "} ";
 		}
@@ -191,7 +191,7 @@ void Board::convertFENIntoPieces(std::string FEN)
 		std::cout << "\n";
 	}*/
 	//if FEN file doesn't exist, load the default position
-	
+
 	//displays the board in the console
 	/*for (int i = 0; i < 8; i++)
 	{
@@ -278,4 +278,3 @@ void Board::convertFENIntoPieces(std::string FEN)
 
 
 }
-

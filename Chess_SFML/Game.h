@@ -28,13 +28,13 @@ private:
 	sf::Vector2i      mousePosInWindow;
 
 	//Game logic management
-	GameLogic*	      currentGameLogic;
+	GameLogic* currentGameLogic;
 	bool			  timeToMove;
 	std::string		  FEN;
 
 	//Game objects
-	Board*			  boardGameObject;
-	
+	Board* boardGameObject;
+
 	//Private methods
 	void gameLoop();
 	void initVariables();
@@ -51,7 +51,7 @@ private:
 	float	  timer;
 	float	  deltatime;
 
-	
+
 
 
 public:
@@ -69,11 +69,10 @@ public:
 	void setTimeToMove(bool _move);
 	bool getTimeToMove();
 	void update();
-	void render(); 
+	void render();
 	const bool running() const;
 	//void initInterface();
 
 
 
 };
-

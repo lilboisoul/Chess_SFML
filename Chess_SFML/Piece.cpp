@@ -16,14 +16,23 @@ bool isEmpty(Board& board, int x, int y)
 	return false;
 }
 bool isSameColor(Board& board, int x1, int y1, int x2, int y2)
-{	
+{
 	if (isInBounds(x2, y2))
-		if(!isEmpty(board, x2, y2))
+		if (!isEmpty(board, x2, y2))
 			if (board.arrayOfSquares[x1 - 1][y1 - 1]->getPiecePtr()->getPieceColor() == board.arrayOfSquares[x2 - 1][y2 - 1]->getPiecePtr()->getPieceColor()) return true;
-	
+
 	return false;
 }
-
+bool isCheck(GameLogic& logic, Board& board, int x1, int y1, int x2, int y2)
+{
+	board.arrayOfSquares[x1 - 1][y1 - 1]->move(board.arrayOfSquares[x2 - 1][y2 - 1]);
+	if (logic.isCheck(board) == true) {
+		board.arrayOfSquares[x2 - 1][y2 - 1]->move(board.arrayOfSquares[x1 - 1][y1 - 1]);
+		return true;
+	}
+	board.arrayOfSquares[x2 - 1][y2 - 1]->move(board.arrayOfSquares[x1 - 1][y1 - 1]);
+	return false;
+}
 std::vector<std::pair<int, int>> checkForAvailableSquares(Board& board, int x, int y, int offsetX, int offsetY)
 {
 	std::vector <std::pair<int, int>> availableSquares;
@@ -95,7 +104,7 @@ std::string Piece::getBoardPosAsString()
 {
 	std::string temp = "";
 	temp += boardPos.first;
-	temp += boardPos.second+48;
+	temp += boardPos.second + 48;
 	return temp;
 }
 std::pair<int, int> Piece::getBoardPosAsInt()
@@ -131,10 +140,10 @@ void Pawn::initVariables()
 
 }
 
-Pawn::Pawn(Game* game, PieceColor _color): Piece(game, _color)
+Pawn::Pawn(Game* game, PieceColor _color) : Piece(game, _color)
 {
 	initVariables();
-	
+
 }
 
 Pawn::~Pawn()
@@ -166,30 +175,32 @@ std::vector<std::pair<int, int>> Pawn::getLegalMoves()
 	std::vector<std::pair<int, int>> possibleMoves;
 	std::vector<std::pair<int, int>> legalMoves;
 	if (hasMoved == false)
-		if(isEmpty(*board, x, y + one))
-			if(isEmpty(*board, x, y + one * 2)){
-				possibleMoves.push_back({x , y + one * 2});
-				possibleMoves.push_back({x , y + one });
-	}
+		if (isEmpty(*board, x, y + one))// && !isCheck(*logic, *board, x, y, x, y + one))
+			if (isEmpty(*board, x, y + one * 2)) {// && !isCheck(*logic, *board, x, y, x, y + one*2)) {
+				possibleMoves.push_back({ x , y + one * 2 });
+				possibleMoves.push_back({ x , y + one });
+			}
 	if (hasMoved == true)
-		if(isEmpty(*board, x, y + one))
+		if (isEmpty(*board, x, y + one))// && !isCheck(*logic, *board, x, y, x, y + one))
 		{
 			possibleMoves.push_back({ x , y + one });
 		}
 	if (isInBounds(x - 1, y + one))
-		if(!isEmpty(*board, x - 1, y + one))
-			if(!isSameColor(*board, x, y, x - 1, y + one))
-				{ 
+		if (!isEmpty(*board, x - 1, y + one))
+			if (!isSameColor(*board, x, y, x - 1, y + one))
+				//if(!isCheck(*logic, *board, x, y, x - 1, y + one))
+			{
 				possibleMoves.push_back({ x - 1, y + one });
-				}
+			}
 	if (isInBounds(x + 1, y + one))
 		if (!isEmpty(*board, x + 1, y + one))
 			if (!isSameColor(*board, x, y, x + 1, y + one))
-				{
-					possibleMoves.push_back({ x + 1, y + one });
-				}
-	
-	
+				//if (!isCheck(*logic, *board, x, y, x + 1, y + one))
+			{
+				possibleMoves.push_back({ x + 1, y + one });
+			}
+
+
 	return possibleMoves;
 }
 
@@ -225,7 +236,7 @@ std::vector<std::pair<int, int>> Knight::getLegalMoves()
 
 	for (auto& [moveX, moveY] : possibleMoves) {
 		if (isInBounds(moveX, moveY))
-			if(isEmpty(*board, moveX, moveY) || !isSameColor(*board, x, y, moveX, moveY))
+			if (isEmpty(*board, moveX, moveY) || !isSameColor(*board, x, y, moveX, moveY))
 				legalMoves.push_back({ moveX, moveY });
 	}
 	return legalMoves;
@@ -385,7 +396,7 @@ std::vector<std::pair<int, int>> King::getLegalMoves()
 	int one;
 	pieceColor == PieceColor::WHITE ? one = 1 : one = -1;
 	Board* board = this->gamePtr->getBoardPtr();
-	std::vector<std::pair<int, int>> possibleMoves { {x + one, y + one}, {x + one, y }, {x + one, y - one}, {x, y + one},
+	std::vector<std::pair<int, int>> possibleMoves{ {x + one, y + one}, {x + one, y }, {x + one, y - one}, {x, y + one},
 													 {x, y - one}, {x - one, y + one}, {x - one, y}, {x - one, y - one} };
 	std::vector<std::pair<int, int>> legalMoves;
 	for (auto& [moveX, moveY] : possibleMoves) {
@@ -395,4 +406,3 @@ std::vector<std::pair<int, int>> King::getLegalMoves()
 	}
 	return legalMoves;
 }
-
