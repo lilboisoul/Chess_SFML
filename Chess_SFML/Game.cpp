@@ -175,7 +175,6 @@ void Game::move(Board& board, GameLogic& logic)
 					sqr_from->squareUnclicked();
 					sqr_to->squareUnclicked();
 					board.unShowLegalMoves();
-					logic.setGameState(logic.checkBoardGameState(board));
 					logic.swapCurrentPlayer();
 					this->setTimeToMove(false);
 					this->timer = defaultTime;

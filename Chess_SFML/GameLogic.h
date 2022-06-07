@@ -7,20 +7,12 @@ enum class PlayerColor {
 	WHITE,
 	BLACK
 };
-enum class GameState {
-	NORMAL,
-	CHECK,
-	CHECKMATE,
-	STALEMATE,
-	DRAW
-};
 
 class GameLogic
 {
 private:
 	Game* gamePtr;
 	PlayerColor currentPlayer;
-	GameState currentGameState;
 	bool canWhiteKingCastleShort;
 	bool canWhiteKingCastleLong;
 	bool canBlackKingCastleShort;
@@ -39,19 +31,7 @@ public:
 	//castling
 	void setCastlingRights(std::string FEN_who_can_castle);
 
-	//check, check-mate, stalemate, draw
-	GameState checkBoardGameState(Board& board);
-	void setGameState(GameState _gamestate);
-	GameState getGameState();
-
-	std::vector<std::pair<int, int>> getCurrentPlayerAllLegalMoves();
 	bool checkIfMoveIsLegal(Square& square_from, Square& square_to);
-	bool isCheck(Board& board);
-	bool isCheckMate(Board& board);
-	bool isStalemate();
-	bool isDraw();
-
-	std::pair<int, int> getKingPos(Board& board);
 
 };
 
