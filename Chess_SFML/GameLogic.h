@@ -21,12 +21,15 @@ private:
 	Game* gamePtr;
 	PlayerColor currentPlayer;
 	GameState currentGameState;
+public:
+	bool isWhiteKingChecked;
+	bool isBlackKingChecked;
 	bool canWhiteKingCastleShort;
 	bool canWhiteKingCastleLong;
 	bool canBlackKingCastleShort;
 	bool canBlackKingCastleLong;
-public:
 	GameLogic(Game* game);
+	GameLogic(const GameLogic& _logic);
 	~GameLogic();
 	void initVariables();
 
@@ -44,13 +47,14 @@ public:
 	void setGameState(GameState _gamestate);
 	GameState getGameState();
 
-	std::vector<std::pair<int, int>> getCurrentPlayerAllLegalMoves();
-	bool checkIfMoveIsLegal(Square& square_from, Square& square_to);
-	bool isCheck(Board& board);
+	std::vector<std::pair<int, int>> getPlayerAllPseudoLegalMoves(Board& board, PlayerColor player);
+	bool checkIfMoveIsLegal(Board& board, GameLogic& logic, Square& square_from, Square& square_to);
+	bool isMyKingChecked(Board& board, PlayerColor color);
+	void areKingsChecked(Board& board);
 	bool isCheckMate(Board& board);
-	bool isStalemate();
+	bool isStalemate(Board& board);
 	bool isDraw();
 
-	std::pair<int, int> getKingPos(Board& board);
+	std::pair<int, int> getEnemyKingPos(Board& board);
 
 };

@@ -1,55 +1,72 @@
 #include "GameLogic.h"
 #include "Game.h"
-bool GameLogic::isCheck(Board& board)
+void GameLogic::areKingsChecked(Board& board)
 {
-	swapCurrentPlayer();
-	std::pair<int, int> enemyKingBoardPosition = getKingPos(board);
-	swapCurrentPlayer();
-	std::vector<std::pair<int, int>> allLegalMoves = getCurrentPlayerAllLegalMoves();
-	for (auto [x, y] : allLegalMoves)
+	isWhiteKingChecked = false;
+	isBlackKingChecked = false;
+	std::pair<int, int> whiteKingBoardPos = board.getKingPtr(PieceColor::WHITE)->getBoardPosAsInt();
+	//std::cout << "White king position: " << whiteKingBoardPos.first << whiteKingBoardPos.second << "\n";
+	std::vector<std::pair<int, int>> allPseudoLegalMoves = getPlayerAllPseudoLegalMoves(board, PlayerColor::BLACK);
+	for (auto [x, y] : allPseudoLegalMoves)
 	{
-		if (x == enemyKingBoardPosition.first && y == enemyKingBoardPosition.second)
-			return true;
+		if (x == whiteKingBoardPos.first && y == whiteKingBoardPos.second) {
+			board.arrayOfSquares[x - 1][y - 1]->getPiecePtr()->writeName();
+			std::cout << " is checked\n";
+			isWhiteKingChecked = true;
+			
+		}
 	}
+	
 
-	return false;
+	std::pair<int, int> blackKingBoardPos = board.getKingPtr(PieceColor::BLACK)->getBoardPosAsInt();
+	//std::cout << "Black king position: " << blackKingBoardPos.first << blackKingBoardPos.second << "\n";
+	allPseudoLegalMoves = getPlayerAllPseudoLegalMoves(board, PlayerColor::WHITE);
+	for (auto [x, y] : allPseudoLegalMoves)
+	{
+		if (x == blackKingBoardPos.first && y == blackKingBoardPos.second) {
+			board.arrayOfSquares[x - 1][y - 1]->getPiecePtr()->writeName();
+			std::cout << " is checked\n";
+			isBlackKingChecked = true;
+
+		}
+	}
+	
+
 }
 bool GameLogic::isCheckMate(Board& board)
 {
-	swapCurrentPlayer();
-	for (int i = 0; i < 8; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			if ((board.arrayOfSquares[i][j]->getPiecePtr()->getPieceColor() == PieceColor::WHITE && getCurrentPlayer() == PlayerColor::WHITE) ||
-				(board.arrayOfSquares[i][j]->getPiecePtr()->getPieceColor() == PieceColor::BLACK && getCurrentPlayer() == PlayerColor::BLACK))
-			{
-				Piece* currentPiece = board.arrayOfSquares[i][j]->getPiecePtr();
-				std::vector<std::pair<int, int>> moves = currentPiece->getLegalMoves();
-				for (auto [x, y] : moves)
-				{
-					board.arrayOfSquares[i][j]->move(board.arrayOfSquares[x][y]);
-					if (!isCheck(board)) {
-						board.arrayOfSquares[x][y]->move(board.arrayOfSquares[i][j]);
-						swapCurrentPlayer();
-						return false;
-					}
-					board.arrayOfSquares[x][y]->move(board.arrayOfSquares[i][j]);
-				}
-			}
-		}
-	}
-	swapCurrentPlayer();
-	return true;
+	//swapCurrentPlayer();
+	//for (int i = 0; i < 8; i++)
+	//{
+	//	for (int j = 0; j < 8; j++)
+	//	{
+	//		if ((board.arrayOfSquares[i][j]->getPiecePtr()->getPieceColor() == PieceColor::WHITE && getCurrentPlayer() == PlayerColor::WHITE) ||
+	//			(board.arrayOfSquares[i][j]->getPiecePtr()->getPieceColor() == PieceColor::BLACK && getCurrentPlayer() == PlayerColor::BLACK))
+	//		{
+	//			Piece* currentPiece = board.arrayOfSquares[i][j]->getPiecePtr();
+	//			std::vector<std::pair<int, int>> moves = currentPiece->getPseudoLegalMoves();
+	//			for (auto [x, y] : moves)
+	//			{
+	//				board.arrayOfSquares[i][j]->move(board.arrayOfSquares[x][y]);
+	//				if (!isCheck(board)) {
+	//					board.arrayOfSquares[x][y]->move(board.arrayOfSquares[i][j]);
+	//					swapCurrentPlayer();
+	//					return false;
+	//				}
+	//				board.arrayOfSquares[x][y]->move(board.arrayOfSquares[i][j]);
+	//			}
+	//		}
+	//	}
+	//}
+	//swapCurrentPlayer();
+	//return true;
+	return false;
 }
-bool GameLogic::isStalemate()
+bool GameLogic::isStalemate(Board& board)
 {
-	swapCurrentPlayer();
-	if (getCurrentPlayerAllLegalMoves().size() == 0) {
-		swapCurrentPlayer();
+	if (getPlayerAllPseudoLegalMoves(board, PlayerColor::WHITE).size() == 0 || getPlayerAllPseudoLegalMoves(board, PlayerColor::BLACK).size() == 0) {
 		return true;
 	}
-	swapCurrentPlayer();
 	return false;
 }
 bool GameLogic::isDraw()
@@ -62,6 +79,16 @@ GameLogic::GameLogic(Game* game) : gamePtr(game)
 	initVariables();
 }
 
+GameLogic::GameLogic(const GameLogic& _logic)
+{
+	this->initVariables();
+	this->gamePtr = _logic.gamePtr;
+	this->currentGameState = _logic.currentGameState;
+	this->currentPlayer = _logic.currentPlayer;
+	//this->isBlackKingChecked = _logic.isBlackKingChecked;
+	//this->isWhiteKingChecked = _logic.isWhiteKingChecked;
+}
+
 
 GameLogic::~GameLogic()
 {
@@ -72,6 +99,8 @@ void GameLogic::initVariables()
 {
 	this->currentPlayer = PlayerColor::WHITE;
 	this->currentGameState = GameState::NORMAL;
+	this->isWhiteKingChecked = false;
+	this->isBlackKingChecked = false;
 	this->canWhiteKingCastleShort = false;
 	this->canWhiteKingCastleLong = false;
 	this->canBlackKingCastleShort = false;
@@ -114,15 +143,15 @@ void GameLogic::setCastlingRights(std::string FEN_who_can_castle)
 
 GameState GameLogic::checkBoardGameState(Board& board)
 {
-	//is there a check on the board
-	if (isCheck(board)) {
+	areKingsChecked(board);
+	if (isWhiteKingChecked == true || isBlackKingChecked == true) {
 		/*if (isCheckMate(board)) {
 			std::cout << "checkmate\n"; return GameState::CHECKMATE;
 		}*/
 		std::cout << "check\n";
 		return GameState::CHECK;
 	}
-	else if (isStalemate()) {
+	else if (isStalemate(board)) {
 		std::cout << "stalemate\n";
 		return GameState::STALEMATE;
 	}
@@ -145,13 +174,13 @@ GameState GameLogic::getGameState()
 	return this->currentGameState;
 }
 
-std::vector<std::pair<int, int>> GameLogic::getCurrentPlayerAllLegalMoves()
+std::vector<std::pair<int, int>> GameLogic::getPlayerAllPseudoLegalMoves(Board& board, PlayerColor player)
 {
 
 	std::vector<std::pair<int, int>> pieceLegalMoves;
 	std::vector<std::pair<int, int>> allLegalMoves;
 	Piece* piece;
-	switch (getCurrentPlayer())
+	switch (player)
 	{
 	case PlayerColor::WHITE:
 		for (int i = 0; i < 8; i++)
@@ -159,12 +188,13 @@ std::vector<std::pair<int, int>> GameLogic::getCurrentPlayerAllLegalMoves()
 			for (int j = 0; j < 8; j++)
 			{
 				pieceLegalMoves.resize(0);
-				if (gamePtr->getBoardPtr()->arrayOfSquares[i][j]->getPiecePtr() != nullptr) {
-					piece = gamePtr->getBoardPtr()->arrayOfSquares[i][j]->getPiecePtr();
+				if (board.arrayOfSquares[i][j]->getPiecePtr() != nullptr) {
+					piece = board.arrayOfSquares[i][j]->getPiecePtr();
 					if (piece->getPieceColor() == PieceColor::WHITE) {
-						pieceLegalMoves = gamePtr->getBoardPtr()->arrayOfSquares[i][j]->getPiecePtr()->getLegalMoves();
+						pieceLegalMoves = piece->getPseudoLegalMoves(board, *this);
+						for (auto i : pieceLegalMoves) allLegalMoves.push_back(i);
 					}
-					for (auto i : pieceLegalMoves) allLegalMoves.push_back(i);
+					
 				}
 			}
 		}
@@ -175,13 +205,15 @@ std::vector<std::pair<int, int>> GameLogic::getCurrentPlayerAllLegalMoves()
 			for (int j = 0; j < 8; j++)
 			{
 				pieceLegalMoves.resize(0);
-				if (gamePtr->getBoardPtr()->arrayOfSquares[i][j]->getPiecePtr() != nullptr) {
-					piece = gamePtr->getBoardPtr()->arrayOfSquares[i][j]->getPiecePtr();
+				if (board.arrayOfSquares[i][j]->getPiecePtr() != nullptr) {
+					piece = board.arrayOfSquares[i][j]->getPiecePtr();
 					if (piece->getPieceColor() == PieceColor::BLACK) {
-						pieceLegalMoves = gamePtr->getBoardPtr()->arrayOfSquares[i][j]->getPiecePtr()->getLegalMoves();
+						pieceLegalMoves = piece->getPseudoLegalMoves(board, *this);
+						for (auto i : pieceLegalMoves) allLegalMoves.push_back(i);
 					}
-					for (auto i : pieceLegalMoves) allLegalMoves.push_back(i);
+					
 				}
+
 
 			}
 		}
@@ -192,11 +224,12 @@ std::vector<std::pair<int, int>> GameLogic::getCurrentPlayerAllLegalMoves()
 	return allLegalMoves;
 }
 
-bool GameLogic::checkIfMoveIsLegal(Square& square_from, Square& square_to)
+bool GameLogic::checkIfMoveIsLegal(Board& board, GameLogic& logic, Square& square_from, Square& square_to)
 {
 	bool isMoveLegal = false;
 	if (square_from.getPiecePtr() != nullptr) {
-		std::vector<std::pair<int, int>> legalmoves = square_from.getPiecePtr()->getLegalMoves();
+		//std::vector<std::pair<int, int>> legalmoves = square_from.getPiecePtr()->getPseudoLegalMoves(); 
+		std::vector<std::pair<int, int>> legalmoves = square_from.getPiecePtr()->getLegalMoves(square_from.getPiecePtr()->getPseudoLegalMoves(board, logic));
 
 		for (int i = 0; i < legalmoves.size(); i++) {
 			if (square_to.getBoardPosAsInt() == legalmoves[i]) {
@@ -208,8 +241,35 @@ bool GameLogic::checkIfMoveIsLegal(Square& square_from, Square& square_to)
 	return isMoveLegal;
 }
 
+bool GameLogic::isMyKingChecked(Board& board, PlayerColor color)
+{
+	if (color == PlayerColor::WHITE) {
+		std::pair<int, int> kingBoardPos = board.getKingPtr(PieceColor::WHITE)->getBoardPosAsInt();
+		std::vector<std::pair<int, int>> allPseudoLegalMoves = getPlayerAllPseudoLegalMoves(board,PlayerColor::BLACK);
+		
+		for (auto [x, y] : allPseudoLegalMoves)
+		{
+			if (x == kingBoardPos.first && y == kingBoardPos.second) {
+				return true;
+			}
+		}
+	}
 
-std::pair<int, int> GameLogic::getKingPos(Board& board)
+	if (color == PlayerColor::BLACK) {
+		std::pair<int, int> kingBoardPos = board.getKingPtr(PieceColor::BLACK)->getBoardPosAsInt();
+		std::vector<std::pair<int, int>> allPseudoLegalMoves = getPlayerAllPseudoLegalMoves(board, PlayerColor::WHITE);
+		for (auto [x, y] : allPseudoLegalMoves)
+		{
+			if (x == kingBoardPos.first && y == kingBoardPos.second) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+
+std::pair<int, int> GameLogic::getEnemyKingPos(Board& board)
 {
 	std::pair<int, int> boardPos = { 0, 0 };
 	for (int i = 0; i < 8; i++) {
@@ -217,8 +277,8 @@ std::pair<int, int> GameLogic::getKingPos(Board& board)
 		{
 			Square* sqr = board.arrayOfSquares[i][j];
 			if (sqr->getPiecePtr() != nullptr) {
-				if ((sqr->getPiecePtr()->getName() == "White king" && getCurrentPlayer() == PlayerColor::WHITE)
-					|| (sqr->getPiecePtr()->getName() == "Black king" && getCurrentPlayer() == PlayerColor::BLACK)) {
+				if ((sqr->getPiecePtr()->getName() == "White king" && getCurrentPlayer() != PlayerColor::WHITE)
+					|| (sqr->getPiecePtr()->getName() == "Black king" && getCurrentPlayer() != PlayerColor::BLACK)) {
 					boardPos = sqr->getPiecePtr()->getBoardPosAsInt();
 					return boardPos;
 				}

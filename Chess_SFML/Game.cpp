@@ -1,6 +1,8 @@
 #include "Game.h"
+#include "GameLogic.h"
 #include <string>
 #include <cstdlib>
+#include <Windows.h>
 bool doesPlayerColorMatchPieceColor(GameLogic logic, Square* sqr) {
 	if ((logic.getCurrentPlayer() == PlayerColor::WHITE && sqr->getPiecePtr()->getPieceColor() == PieceColor::WHITE)
 		|| (logic.getCurrentPlayer() == PlayerColor::BLACK && sqr->getPiecePtr()->getPieceColor() == PieceColor::BLACK))
@@ -67,7 +69,7 @@ void Game::convertFEN(std::string FEN)
 	std::string FEN_possible_enpassant_moves = "";
 
 	//extracting piece-portion of FEN
-	for (size_t i = 0; i < FEN.length(); i++)
+	for (int i = 0; i < FEN.length(); i++)
 	{
 		if (FEN[i] != ' ') FEN_pieces += FEN[i];
 		else {
@@ -125,7 +127,7 @@ void Game::waitingForMove(Board& board, GameLogic& logic)
 				{
 					sqr->squareClicked();
 					this->setTimeToMove(true);
-					board.showLegalMoves(sqr->getPiecePtr()->getLegalMoves());
+					board.showLegalMoves(sqr->getPiecePtr()->getLegalMoves(sqr->getPiecePtr()->getPseudoLegalMoves(board, logic)));
 					std::cout << "Clicked the " << sqr->getBoardPos().first << sqr->getBoardPos().second << " square\n";
 
 					this->timer = defaultTime;
@@ -160,26 +162,29 @@ void Game::move(Board& board, GameLogic& logic)
 				Square* sqr_to = board.arrayOfSquares[i][j];
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)
 					&& sqr_from->getBoardPos() != sqr_to->getBoardPos()
-					&& logic.checkIfMoveIsLegal(*sqr_from, *sqr_to) == true
 					&& isMouseOnASquare(mousePosInWindow, sqr_to))
+
 				{
-					if (sqr_to->getPiecePtr() != nullptr) {
-						std::cout << sqr_from->getPiecePtr()->getName() << " from " << sqr_from->getBoardPos().first << sqr_from->getBoardPos().second
-							<< " captured a " << sqr_to->getPiecePtr()->getName() << " on " << sqr_to->getBoardPos().first << sqr_to->getBoardPos().second << "\n";
+					if (logic.checkIfMoveIsLegal(board, logic, *sqr_from, *sqr_to) == true) {
+						if (sqr_to->getPiecePtr() != nullptr) {
+							std::cout << sqr_from->getPiecePtr()->getName() << " from " << sqr_from->getBoardPos().first << sqr_from->getBoardPos().second
+								<< " captured a " << sqr_to->getPiecePtr()->getName() << " on " << sqr_to->getBoardPos().first << sqr_to->getBoardPos().second << "\n";
+						}
+						else {
+							std::cout << sqr_from->getPiecePtr()->getName() << " moved from " << sqr_from->getBoardPos().first << sqr_from->getBoardPos().second
+								<< " to " << sqr_to->getBoardPos().first << sqr_to->getBoardPos().second << "\n";
+						}
+						sqr_from->move(sqr_to);
+						sqr_from->squareUnclicked();
+						sqr_to->squareUnclicked();
+						board.unShowLegalMoves();
+						logic.setGameState(logic.checkBoardGameState(board));
+						//std::cout << board.convertPiecesIntoFEN() << '\n';
+						logic.swapCurrentPlayer();
+						this->setTimeToMove(false);
+						this->timer = defaultTime;
+						break;
 					}
-					else {
-						std::cout << sqr_from->getPiecePtr()->getName() << " moved from " << sqr_from->getBoardPos().first << sqr_from->getBoardPos().second
-							<< " to " << sqr_to->getBoardPos().first << sqr_to->getBoardPos().second << "\n";
-					}
-					sqr_from->move(sqr_to);
-					sqr_from->squareUnclicked();
-					sqr_to->squareUnclicked();
-					board.unShowLegalMoves();
-					logic.setGameState(logic.checkBoardGameState(board));
-					logic.swapCurrentPlayer();
-					this->setTimeToMove(false);
-					this->timer = defaultTime;
-					break;
 				}
 				//unclicking the square
 				else if (sf::Mouse::isButtonPressed(sf::Mouse::Left)

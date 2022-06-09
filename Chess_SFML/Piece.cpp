@@ -17,20 +17,31 @@ bool isEmpty(Board& board, int x, int y)
 }
 bool isSameColor(Board& board, int x1, int y1, int x2, int y2)
 {
-	if (isInBounds(x2, y2))
-		if (!isEmpty(board, x2, y2))
-			if (board.arrayOfSquares[x1 - 1][y1 - 1]->getPiecePtr()->getPieceColor() == board.arrayOfSquares[x2 - 1][y2 - 1]->getPiecePtr()->getPieceColor()) return true;
+	if (!isInBounds(x2, y2))
+		return false;
+	if (isEmpty(board, x2, y2))
+		return false;
+	if (board.arrayOfSquares[x1 - 1][y1 - 1]->getPiecePtr()->getPieceColor() != board.arrayOfSquares[x2 - 1][y2 - 1]->getPiecePtr()->getPieceColor())
+		return false;
 
-	return false;
+	return true;
 }
-bool isCheck(GameLogic& logic, Board& board, int x1, int y1, int x2, int y2)
+bool isMyKingChecked(GameLogic logic, Board board, PieceColor pieceColor, int x1, int y1, int x2, int y2)
 {
+	PlayerColor color;
+	if (pieceColor == PieceColor::WHITE)
+	{
+		color = PlayerColor::WHITE;
+	}
+	else 
+	{
+		color = PlayerColor::BLACK;
+	}
 	board.arrayOfSquares[x1 - 1][y1 - 1]->move(board.arrayOfSquares[x2 - 1][y2 - 1]);
-	if (logic.isCheck(board) == true) {
-		board.arrayOfSquares[x2 - 1][y2 - 1]->move(board.arrayOfSquares[x1 - 1][y1 - 1]);
+	if (logic.isMyKingChecked(board, color))
+	{
 		return true;
 	}
-	board.arrayOfSquares[x2 - 1][y2 - 1]->move(board.arrayOfSquares[x1 - 1][y1 - 1]);
 	return false;
 }
 std::vector<std::pair<int, int>> checkForAvailableSquares(Board& board, int x, int y, int offsetX, int offsetY)
@@ -65,16 +76,36 @@ Piece::Piece(Game* game, PieceColor _color) : pieceColor(_color), gamePtr(game)
 	this->initVariables();
 }
 
+Piece::Piece(const Piece& _piece)
+{
+	*this = _piece;
+
+}
+
 Piece::~Piece()
 {
-	delete gamePtr;
+
+}
+
+Piece& Piece::operator=(const Piece& _piece)
+{
+	this->initVariables();
+	this->gamePtr = _piece.gamePtr;
+	this->pieceGameObject = _piece.pieceGameObject;
+	this->name = _piece.name;
+	this->boardPos = _piece.boardPos;
+	this->posX = _piece.posX;
+	this->posY = _piece.posY;
+	this->pieceColor = _piece.pieceColor;
+	return *this;
 }
 
 std::pair<int, int> Piece::getPosition()
 {
 	return std::make_pair(posX, posY);
 }
-void Piece::setPosition(int new_posX, int new_posY)
+
+void Piece::setPosition(float new_posX, float new_posY)
 {
 	this->posX = new_posX;
 	this->posY = new_posY;
@@ -125,6 +156,21 @@ PieceColor Piece::getPieceColor()
 {
 	return this->pieceColor;
 }
+std::vector<std::pair<int, int>> Piece::getLegalMoves(std::vector<std::pair<int, int>> pseudoLegalMoves)
+{
+	int x = getBoardPos().first - 96;
+	int y = getBoardPos().second;
+	Board* board = this->gamePtr->getBoardPtr();
+	GameLogic* logic = this->gamePtr->getLogicPtr();
+	
+	std::vector<std::pair<int, int>> legalMoves;
+	for (auto [moveX, moveY] : pseudoLegalMoves)
+	{
+		if (!isMyKingChecked(*logic, *board, pieceColor, x, y, moveX, moveY))
+			legalMoves.push_back({ moveX, moveY });
+	}
+	return legalMoves;
+}
 
 void Piece::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
@@ -139,17 +185,37 @@ void Pawn::initVariables()
 
 
 }
-
+Piece* Pawn::clone() const
+{
+	return new Pawn(*this);
+}
+Piece* Knight::clone() const
+{
+	return new Knight(*this);
+}
+Piece* Bishop::clone() const
+{
+	return new Bishop(*this);
+}
+Piece* Rook::clone() const
+{
+	return new Rook(*this);
+}
+Piece* Queen::clone() const
+{
+	return new Queen(*this);
+}
+Piece* King::clone() const
+{
+	return new King(*this);
+}
 Pawn::Pawn(Game* game, PieceColor _color) : Piece(game, _color)
 {
 	initVariables();
 
 }
 
-Pawn::~Pawn()
-{
-	delete gamePtr;
-}
+
 
 void Pawn::setBoardPos(std::pair<char, int> _boardPos)
 {
@@ -164,37 +230,38 @@ void Pawn::setHasMoved()
 	else this->hasMoved = false;
 }
 
-std::vector<std::pair<int, int>> Pawn::getLegalMoves()
+std::vector<std::pair<int, int>> Pawn::getPseudoLegalMoves(Board& board, GameLogic& logic)
 {
 	int x = getBoardPos().first - 96;
 	int y = getBoardPos().second;
 	int one;
-	Board* board = this->gamePtr->getBoardPtr();
-	GameLogic* logic = this->gamePtr->getLogicPtr();
+	//Board* board = this->gamePtr->getBoardPtr();
+	//GameLogic* logic = this->gamePtr->getLogicPtr();
 	pieceColor == PieceColor::WHITE ? one = 1 : one = -1;
 	std::vector<std::pair<int, int>> possibleMoves;
 	std::vector<std::pair<int, int>> legalMoves;
 	if (hasMoved == false)
-		if (isEmpty(*board, x, y + one))// && !isCheck(*logic, *board, x, y, x, y + one))
-			if (isEmpty(*board, x, y + one * 2)) {// && !isCheck(*logic, *board, x, y, x, y + one*2)) {
+		if (isEmpty(board, x, y + one))
+			if (isEmpty(board, x, y + one * 2)) 
+			{
 				possibleMoves.push_back({ x , y + one * 2 });
 				possibleMoves.push_back({ x , y + one });
 			}
 	if (hasMoved == true)
-		if (isEmpty(*board, x, y + one))// && !isCheck(*logic, *board, x, y, x, y + one))
+		if (isEmpty(board, x, y + one))// && !isCheck(*logic, *board, x, y, x, y + one))
 		{
 			possibleMoves.push_back({ x , y + one });
 		}
 	if (isInBounds(x - 1, y + one))
-		if (!isEmpty(*board, x - 1, y + one))
-			if (!isSameColor(*board, x, y, x - 1, y + one))
+		if (!isEmpty(board, x - 1, y + one))
+			if (!isSameColor(board, x, y, x - 1, y + one))
 				//if(!isCheck(*logic, *board, x, y, x - 1, y + one))
 			{
 				possibleMoves.push_back({ x - 1, y + one });
 			}
 	if (isInBounds(x + 1, y + one))
-		if (!isEmpty(*board, x + 1, y + one))
-			if (!isSameColor(*board, x, y, x + 1, y + one))
+		if (!isEmpty(board, x + 1, y + one))
+			if (!isSameColor(board, x, y, x + 1, y + one))
 				//if (!isCheck(*logic, *board, x, y, x + 1, y + one))
 			{
 				possibleMoves.push_back({ x + 1, y + one });
@@ -203,6 +270,7 @@ std::vector<std::pair<int, int>> Pawn::getLegalMoves()
 
 	return possibleMoves;
 }
+
 
 
 
@@ -219,24 +287,21 @@ Knight::Knight(Game* game, PieceColor _color) : Piece(game, _color)
 	initVariables();
 }
 
-Knight::~Knight()
-{
-	delete gamePtr;
-}
 
-std::vector<std::pair<int, int>> Knight::getLegalMoves()
+
+std::vector<std::pair<int, int>> Knight::getPseudoLegalMoves(Board& board, GameLogic& logic)
 {
 	int x = getBoardPos().first - 96;
 	int y = getBoardPos().second;
 	int one;
-	Board* board = this->gamePtr->getBoardPtr();
+	//Board* board = this->gamePtr->getBoardPtr();
 	pieceColor == PieceColor::WHITE ? one = 1 : one = -1;
 	std::vector<std::pair<int, int>> possibleMoves = { {x - 1, y + one * 2}, { x - 1, y - one * 2 },{x + 1, y + one * 2},{x + 1, y - one * 2}, {x - 2, y + one}, {x - 2, y - one}, {x + 2, y + one}, {x + 2, y - one} };
 	std::vector<std::pair<int, int>> legalMoves;
 
 	for (auto& [moveX, moveY] : possibleMoves) {
 		if (isInBounds(moveX, moveY))
-			if (isEmpty(*board, moveX, moveY) || !isSameColor(*board, x, y, moveX, moveY))
+			if (isEmpty(board, moveX, moveY) || !isSameColor(board, x, y, moveX, moveY))
 				legalMoves.push_back({ moveX, moveY });
 	}
 	return legalMoves;
@@ -257,27 +322,24 @@ Bishop::Bishop(Game* game, PieceColor _color) : Piece(game, _color)
 	initVariables();
 }
 
-Bishop::~Bishop()
-{
-	delete gamePtr;
-}
-std::vector<std::pair<int, int>> Bishop::getLegalMoves()
+
+std::vector<std::pair<int, int>> Bishop::getPseudoLegalMoves(Board& board, GameLogic& logic)
 {
 	int x = getBoardPos().first - 96;
 	int y = getBoardPos().second;
-	Board* board = this->gamePtr->getBoardPtr();
+	//Board* board = this->gamePtr->getBoardPtr();
 	std::vector<std::pair<int, int>> legalMoves;
 	//checks up-right diagonal
-	for (auto i : checkForAvailableSquares(*board, x, y, 1, 1))
+	for (auto i : checkForAvailableSquares(board, x, y, 1, 1))
 		legalMoves.push_back(i);
 	//checks down-right diagonal
-	for (auto i : checkForAvailableSquares(*board, x, y, 1, -1))
+	for (auto i : checkForAvailableSquares(board, x, y, 1, -1))
 		legalMoves.push_back(i);
 	//checks down-left diagonal
-	for (auto i : checkForAvailableSquares(*board, x, y, -1, -1))
+	for (auto i : checkForAvailableSquares(board, x, y, -1, -1))
 		legalMoves.push_back(i);
 	//checks up-left diagonal
-	for (auto i : checkForAvailableSquares(*board, x, y, -1, 1))
+	for (auto i : checkForAvailableSquares(board, x, y, -1, 1))
 		legalMoves.push_back(i);
 
 	return legalMoves;
@@ -295,28 +357,25 @@ Rook::Rook(Game* game, PieceColor _color) : Piece(game, _color)
 	initVariables();
 }
 
-Rook::~Rook()
-{
-	delete gamePtr;
-}
-std::vector<std::pair<int, int>> Rook::getLegalMoves()
+
+std::vector<std::pair<int, int>> Rook::getPseudoLegalMoves(Board& board, GameLogic& logic)
 {
 	int x = getBoardPos().first - 96;
 	int y = getBoardPos().second;
-	Board* board = this->gamePtr->getBoardPtr();
+	//Board* board = this->gamePtr->getBoardPtr();
 	std::vector<std::pair<int, int>> legalMoves;
 
 	//checks to the right
-	for (auto i : checkForAvailableSquares(*board, x, y, 1, 0))
+	for (auto i : checkForAvailableSquares(board, x, y, 1, 0))
 		legalMoves.push_back(i);
 	//checks to the left
-	for (auto i : checkForAvailableSquares(*board, x, y, -1, 0))
+	for (auto i : checkForAvailableSquares(board, x, y, -1, 0))
 		legalMoves.push_back(i);
 	//checks down
-	for (auto i : checkForAvailableSquares(*board, x, y, 0, -1))
+	for (auto i : checkForAvailableSquares(board, x, y, 0, -1))
 		legalMoves.push_back(i);
 	//checks up
-	for (auto i : checkForAvailableSquares(*board, x, y, 0, 1))
+	for (auto i : checkForAvailableSquares(board, x, y, 0, 1))
 		legalMoves.push_back(i);
 	return legalMoves;
 }
@@ -333,40 +392,37 @@ Queen::Queen(Game* game, PieceColor _color) : Piece(game, _color)
 	initVariables();
 }
 
-Queen::~Queen()
-{
-	delete gamePtr;
-}
-std::vector<std::pair<int, int>> Queen::getLegalMoves()
+
+std::vector<std::pair<int, int>> Queen::getPseudoLegalMoves(Board& board, GameLogic& logic)
 {
 	int x = getBoardPos().first - 96;
 	int y = getBoardPos().second;
-	Board* board = this->gamePtr->getBoardPtr();
+	//Board* board = this->gamePtr->getBoardPtr();
 	std::vector<std::pair<int, int>> legalMoves;
 
 	//checks to the right
-	for (auto i : checkForAvailableSquares(*board, x, y, 1, 0))
+	for (auto i : checkForAvailableSquares(board, x, y, 1, 0))
 		legalMoves.push_back(i);
 	//checks to the left
-	for (auto i : checkForAvailableSquares(*board, x, y, -1, 0))
+	for (auto i : checkForAvailableSquares(board, x, y, -1, 0))
 		legalMoves.push_back(i);
 	//checks down
-	for (auto i : checkForAvailableSquares(*board, x, y, 0, -1))
+	for (auto i : checkForAvailableSquares(board, x, y, 0, -1))
 		legalMoves.push_back(i);
 	//checks up
-	for (auto i : checkForAvailableSquares(*board, x, y, 0, 1))
+	for (auto i : checkForAvailableSquares(board, x, y, 0, 1))
 		legalMoves.push_back(i);
 	//checks up-right diagonal
-	for (auto i : checkForAvailableSquares(*board, x, y, 1, 1))
+	for (auto i : checkForAvailableSquares(board, x, y, 1, 1))
 		legalMoves.push_back(i);
 	//checks down-right diagonal
-	for (auto i : checkForAvailableSquares(*board, x, y, 1, -1))
+	for (auto i : checkForAvailableSquares(board, x, y, 1, -1))
 		legalMoves.push_back(i);
 	//checks down-left diagonal
-	for (auto i : checkForAvailableSquares(*board, x, y, -1, -1))
+	for (auto i : checkForAvailableSquares(board, x, y, -1, -1))
 		legalMoves.push_back(i);
 	//checks up-left diagonal
-	for (auto i : checkForAvailableSquares(*board, x, y, -1, 1))
+	for (auto i : checkForAvailableSquares(board, x, y, -1, 1))
 		legalMoves.push_back(i);
 
 	return legalMoves;
@@ -384,24 +440,20 @@ King::King(Game* game, PieceColor _color) : Piece(game, _color)
 	initVariables();
 }
 
-King::~King()
-{
-	delete gamePtr;
-}
 
-std::vector<std::pair<int, int>> King::getLegalMoves()
+std::vector<std::pair<int, int>> King::getPseudoLegalMoves(Board& board, GameLogic& logic)
 {
 	int x = getBoardPos().first - 96;
 	int y = getBoardPos().second;
 	int one;
 	pieceColor == PieceColor::WHITE ? one = 1 : one = -1;
-	Board* board = this->gamePtr->getBoardPtr();
+	//Board* board = this->gamePtr->getBoardPtr();
 	std::vector<std::pair<int, int>> possibleMoves{ {x + one, y + one}, {x + one, y }, {x + one, y - one}, {x, y + one},
 													 {x, y - one}, {x - one, y + one}, {x - one, y}, {x - one, y - one} };
 	std::vector<std::pair<int, int>> legalMoves;
 	for (auto& [moveX, moveY] : possibleMoves) {
 		if (isInBounds(moveX, moveY))
-			if (isEmpty(*board, moveX, moveY) || !isSameColor(*board, x, y, moveX, moveY))
+			if (isEmpty(board, moveX, moveY) || !isSameColor(board, x, y, moveX, moveY))
 				legalMoves.push_back({ moveX, moveY });
 	}
 	return legalMoves;

@@ -1,23 +1,62 @@
 #include "Board.h"
 #include "Game.h"
 
+Board::Board(const Board& _board)
+{
+	this->gamePtr = _board.gamePtr;
+	this->initTextures();
+	this->initBoardVisualProperties();
+	this->initArrayOfSquares();
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			this->arrayOfSquares[i][j] = _board.arrayOfSquares[i][j]->clone();
+		}
+	}
+	this->whiteKingPtr = getKingPtr(PieceColor::WHITE);
+	this->blackKingPtr = getKingPtr(PieceColor::BLACK);
+}
+
 Board::Board(Game* _game, std::string FEN_filename) : gamePtr(_game)
 {
 	this->initTextures();
 	this->initBoardVisualProperties();
 	this->initArrayOfSquares();
 	this->convertFENIntoPieces(FEN_filename);
+	this->whiteKingPtr = getKingPtr(PieceColor::WHITE);
+	this->blackKingPtr = getKingPtr(PieceColor::BLACK);
 }
 
 
 Board::~Board()
 {
-	delete gamePtr;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
-			delete arrayOfSquares[i][j];
+			if(arrayOfSquares[i][j]!=nullptr) delete arrayOfSquares[i][j];
 		}
 	}
+}
+
+Piece* Board::getKingPtr(PieceColor color)
+{
+	std::string name;
+	if (color == PieceColor::WHITE) name = "White king";
+	if (color == PieceColor::BLACK) name = "Black king";
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			Square* sqr = this->arrayOfSquares[i][j];
+			if (sqr->getPiecePtr() != nullptr) {
+				if (sqr->getPiecePtr()->getName() == name)
+				{
+					return sqr->getPiecePtr();
+				}
+			}
+		}
+	}
+	return this->arrayOfSquares[0][0]->getPiecePtr();
 }
 
 void Board::initBoardVisualProperties()
@@ -46,7 +85,6 @@ void Board::showLegalMoves(std::vector<std::pair<int, int>> legalMoves)
 			}
 		}
 	}
-	std::cout << "\n";
 }
 
 void Board::unShowLegalMoves()
@@ -85,13 +123,12 @@ void Board::initArrayOfSquares()
 
 
 			//sets the position of squares on the board in pixels
-			this->arrayOfSquares[i][j]->setPosition(boardGameObject.getPosition().x + 100 * i, boardGameObject.getPosition().y + 100 * (7 - j));
+			this->arrayOfSquares[i][j]->setPosition(boardGameObject.getPosition().x + 100.0 * i, boardGameObject.getPosition().y + 100.0 * (7 - j));
 			this->arrayOfSquares[i][j]->setBoardPos(i, j + 1);
 			//std::cout << "" << arrayOfSquares[i][j].getBoardPos().first << arrayOfSquares[i][j].getBoardPos().second << " ";
 			//std::cout << "{" << array_of_squares[i][j].getPosition().first << " " << array_of_squares[i][j].getPosition().second << "} ";
 		}
 		temporaryNumber++;
-		std::cout << "\n";
 	}
 
 }
@@ -105,6 +142,8 @@ inline void Board::update()
 			arrayOfSquares[i][j]->update();
 		}
 	}
+	this->whiteKingPtr = getKingPtr(PieceColor::WHITE);
+	this->blackKingPtr = getKingPtr(PieceColor::BLACK);
 }
 void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
@@ -277,4 +316,34 @@ void Board::convertFENIntoPieces(std::string FEN)
 	}
 
 
+}
+
+std::string Board::convertPiecesIntoFEN()
+{
+	std::string result_FEN = "";
+	for (int j = 0; j < 8; j++)
+	{
+		for (int i = 0; i < 8; i++)
+		{
+			
+			if (arrayOfSquares[i][j]->getPiecePtr() != nullptr) {
+				Piece* piece = arrayOfSquares[i][j]->getPiecePtr();
+				if		(piece->getName() == "White pawn")	 {result_FEN += 'p';}
+				else if (piece->getName() == "Black pawn")   {result_FEN += 'P';}
+				else if (piece->getName() == "White knight") {result_FEN += 'n';}
+				else if (piece->getName() == "Black knight") {result_FEN += 'N';}
+				else if (piece->getName() == "White bishop") {result_FEN += 'b';}
+				else if (piece->getName() == "Black bishop") {result_FEN += 'B';}
+				else if (piece->getName() == "White rook")   {result_FEN += 'r';}
+				else if (piece->getName() == "Black rook")   {result_FEN += 'R';}
+				else if (piece->getName() == "White queen")  {result_FEN += 'q';}
+				else if (piece->getName() == "Black queen")  {result_FEN += 'Q';}
+				else if (piece->getName() == "White king")   {result_FEN += 'k';}
+				else if (piece->getName() == "Black king")   {result_FEN += 'K';}
+			}
+			else result_FEN += '1';
+		}
+		if(j != 7) result_FEN += '/';
+	}
+	return result_FEN;
 }

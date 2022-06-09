@@ -4,6 +4,12 @@
 Square::Square(Game* _game): gamePtr(_game)
 {
 	this->initVariables();
+
+}
+
+Square::Square(const Square& _square)
+{
+	*this = _square;
 }
 
 Square::Square(SquareColor _color) : squareColor(_color)
@@ -19,8 +25,25 @@ Square::Square(SquareColor _color) : squareColor(_color)
 
 Square::~Square()
 {
-	delete piecePtr;
-	delete gamePtr;
+	if(piecePtr != nullptr) delete piecePtr;
+}
+
+Square& Square::operator=(const Square& _square)
+{
+	this->initVariables();
+	this->gamePtr = _square.gamePtr;
+	if(_square.piecePtr != nullptr) this->piecePtr = _square.piecePtr->clone();
+	this->boardPos = _square.boardPos;
+	this->posX = _square.posX;
+	this->posY = _square.posY;
+	this->isClicked = _square.isClicked;
+	this->squareGameObject = _square.squareGameObject;
+	return *this;
+}
+
+Square* Square::clone() const
+{
+	return new Square(*this);
 }
 
 void Square::initVariables()
@@ -44,7 +67,7 @@ std::pair<int, int> Square:: getPosition()
 	return std::make_pair(posX, posY);
 }
 
-void Square::setPosition(int new_posX, int new_posY)
+void Square::setPosition(float new_posX, float new_posY)
 {
 	this->posX = new_posX;
 	this->posY = new_posY;
@@ -115,7 +138,7 @@ Piece* Square::getPiecePtr()
 }
 void Square::placePiece(Piece* piece)
 {
-	this->piecePtr = piece;
+	if(piece != nullptr)this->piecePtr = piece;
 	piecePtr->setBoardPos(getBoardPos());
 	piecePtr->pieceGameObject.setSize({ 100, 100 });
 	piecePtr->pieceGameObject.setOrigin(piecePtr->pieceGameObject.getSize() / 2.0f);

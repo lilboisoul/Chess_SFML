@@ -21,7 +21,7 @@ class Square : public sf::Drawable
 
 	//Private variables
 
-		int posX, posY; //position on the screen [pixels]
+		float posX, posY; //position on the screen [pixels]
 		std::pair<char, int> boardPos;
 		SquareColor squareColor;
 		Piece* piecePtr;
@@ -39,13 +39,16 @@ class Square : public sf::Drawable
 
 	//Constructors / Destructors
 		Square(Game* _game);
+		Square(const Square& _square);
 		Square(SquareColor _color);
 		~Square();
+		Square& operator=(const Square& _square);
+		Square* clone() const;
 
 	//Methods
 
-		std::pair<int, int>  getPosition(); 
-		void setPosition(int new_posX, int new_posY); 
+		std::pair<int, int>  getPosition();
+		void setPosition(float new_posX, float new_posY); 
 		std::pair<char, int> getBoardPos();
 		std::pair<int, int>getBoardPosAsInt();
 		std::string getBoardPosAsString();

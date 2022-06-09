@@ -9,6 +9,8 @@
 	A class representing a chess piece.
 */
 class Game;
+class Board;
+class GameLogic;
 enum class PieceColor {
 	WHITE,
 	BLACK
@@ -28,19 +30,20 @@ public:
 	sf::RectangleShape pieceGameObject;
 	std::string name;
 	std::pair<char, int> boardPos;
-	int posX, posY; //position on the screen [pixels]
+	float posX, posY; //position on the screen [pixels]
 	PieceColor pieceColor;
 	//Constructors / Destructors
 
 	Piece(Game* _game, PieceColor _color);
+	Piece(const Piece& _piece);
 	~Piece();
-
+	Piece& operator=(const Piece& _piece);
 	//Methods
 		//returns the position of the piece as a pair: <posX, posY>
 	std::pair<int, int> getPosition();
-
+	virtual Piece* clone() const = 0;
 	//sets the position of a piece
-	void setPosition(int new_posX, int new_posY);
+	void setPosition(float new_posX, float new_posY);
 	void setTexture(sf::Texture* texture);
 	void setBoardPos(std::string _boardPos);
 	virtual void setBoardPos(std::pair<char, int> _boardPos);
@@ -50,7 +53,8 @@ public:
 	void writeName();
 	std::string getName();
 	PieceColor getPieceColor();
-	virtual std::vector<std::pair<int, int>> getLegalMoves() = 0;
+	virtual std::vector<std::pair<int, int>> getPseudoLegalMoves(Board& board, GameLogic& logic) = 0;
+	std::vector<std::pair<int, int>> getLegalMoves(std::vector<std::pair<int, int>> pseudoLegalMoves);
 	//draws the piece on the screen
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
@@ -65,10 +69,10 @@ private:
 public:
 	//Constructors / Destructors
 	Pawn(Game* game, PieceColor _color);
-	~Pawn();
+	Piece* clone() const;
 	void setBoardPos(std::pair<char, int> _boardPos);
 	void setHasMoved();
-	std::vector<std::pair<int, int>> getLegalMoves();
+	std::vector<std::pair<int, int>> getPseudoLegalMoves(Board& board, GameLogic& logic);
 
 };
 
@@ -80,12 +84,9 @@ private:
 
 public:
 	//Constructors / Destructors
+	Piece* clone() const;
 	Knight(Game* game, PieceColor _color);
-	~Knight();
-
-
-	std::vector<std::pair<int, int>> getLegalMoves();
-
+	std::vector<std::pair<int, int>> getPseudoLegalMoves(Board& board, GameLogic& logic);
 };
 
 class Bishop : public Piece
@@ -96,12 +97,9 @@ private:
 
 public:
 	//Constructors / Destructors
+	Piece* clone() const;
 	Bishop(Game* game, PieceColor _color);
-	~Bishop();
-
-
-	std::vector<std::pair<int, int>> getLegalMoves();
-
+	std::vector<std::pair<int, int>> getPseudoLegalMoves(Board& board, GameLogic& logic);
 };
 
 class Rook : public Piece
@@ -112,12 +110,9 @@ private:
 
 public:
 	//Constructors / Destructors
+	Piece* clone() const;
 	Rook(Game* game, PieceColor _color);
-	~Rook();
-
-
-	std::vector<std::pair<int, int>> getLegalMoves();
-
+	std::vector<std::pair<int, int>> getPseudoLegalMoves(Board& board, GameLogic& logic);
 };
 
 class Queen : public Piece
@@ -128,11 +123,9 @@ private:
 
 public:
 	//Constructors / Destructors
+	Piece* clone() const;
 	Queen(Game* game, PieceColor _color);
-	~Queen();
-
-
-	std::vector<std::pair<int, int>> getLegalMoves();
+	std::vector<std::pair<int, int>> getPseudoLegalMoves(Board& board, GameLogic& logic);
 };
 
 class King : public Piece
@@ -143,10 +136,7 @@ private:
 
 public:
 	//Constructors / Destructors
+	Piece* clone() const;
 	King(Game* game, PieceColor _color);
-	~King();
-
-
-	std::vector<std::pair<int, int>> getLegalMoves();
-
+	std::vector<std::pair<int, int>> getPseudoLegalMoves(Board& board, GameLogic& logic);
 };

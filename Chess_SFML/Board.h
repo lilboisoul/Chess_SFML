@@ -17,26 +17,27 @@ class Board : public sf::Drawable
 private:
 	//FEN -> pieces
 	void convertFENIntoPieces(std::string FEN);
-
 	//Handling textures
 	std::map <std::string, sf::Texture> textures;
 	void initTextures();
 public:
+	std::string convertPiecesIntoFEN();
 	Game* gamePtr;
 	//An array containing 64 squares in 8 rows and 8 columns
 	Square* arrayOfSquares[8][8];
-
+	Piece* whiteKingPtr;
+	Piece* blackKingPtr;
 
 	//Visual representation of the board
 	sf::RectangleShape boardGameObject;
 
 	//Constructors / Destructors
-
+	Board(const Board& _board);
 	Board(Game* _game, std::string FEN_filename);
 	~Board();
 
 	//Public methods
-
+	Piece* getKingPtr(PieceColor color);
 	void initBoardVisualProperties();
 	void initArrayOfSquares();
 	void showLegalMoves(std::vector<std::pair<int, int>> legalMoves);
@@ -45,6 +46,6 @@ public:
 	virtual inline void update();
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-
+	
 
 };
